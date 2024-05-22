@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.get_constraints ()
+CREATE FUNCTION public.get_constraints ()
     RETURNS TABLE
             (
                 "def"          TEXT,

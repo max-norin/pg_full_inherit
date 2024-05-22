@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.get_triggers ()
+CREATE FUNCTION public.get_triggers ()
     RETURNS TABLE
             (
                 "def"          TEXT,

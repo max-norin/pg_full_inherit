@@ -1,6 +1,6 @@
 -- триггер события для добавление триггеров от родительских таблиц
 -- в основом используется для создания REFERENCES
-CREATE OR REPLACE FUNCTION public.event_trigger_add_triggers_from_parent_tables ()
+CREATE FUNCTION public.event_trigger_add_triggers_from_parent_tables ()
     RETURNS EVENT_TRIGGER
     AS $$
 DECLARE
