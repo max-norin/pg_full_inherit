@@ -65,7 +65,3 @@ END;
 $$
 LANGUAGE plpgsql
 VOLATILE;
-
--- CREATE EVENT TRIGGER "add_triggers_from_parent_tables" ON ddl_command_end
---     WHEN TAG IN ('CREATE TABLE', 'CREATE TRIGGER')
--- EXECUTE PROCEDURE public.event_trigger_add_triggers_from_parent_tables ();

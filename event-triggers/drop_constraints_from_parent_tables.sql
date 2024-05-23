@@ -48,7 +48,3 @@ END;
 $$
 LANGUAGE plpgsql
 VOLATILE;
-
--- CREATE EVENT TRIGGER "drop_constraints_from_parent_tables" ON sql_drop
---     WHEN TAG IN ('ALTER TABLE')
--- EXECUTE PROCEDURE public.event_trigger_drop_constraints_from_parent_tables ();

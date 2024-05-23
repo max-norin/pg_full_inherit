@@ -64,8 +64,3 @@ END;
 $$
 LANGUAGE plpgsql
 VOLATILE;
-
--- CREATE EVENT TRIGGER "add_constraints_from_parent_tables" ON ddl_command_end
---     WHEN TAG IN ('CREATE TABLE', 'ALTER TABLE')
--- EXECUTE PROCEDURE public.event_trigger_add_constraints_from_parent_tables ();
-

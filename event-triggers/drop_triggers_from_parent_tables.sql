@@ -46,7 +46,3 @@ END;
 $$
 LANGUAGE plpgsql
 VOLATILE;
-
--- CREATE EVENT TRIGGER "drop_triggers_from_parent_tables" ON sql_drop
---     WHEN TAG IN ('DROP TRIGGER')
--- EXECUTE PROCEDURE public.event_trigger_drop_triggers_from_parent_tables ();
