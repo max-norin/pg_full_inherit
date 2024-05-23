@@ -7,5 +7,5 @@ ALTER TABLE public.users
 ALTER TABLE public.users
     DROP COLUMN city_id;
 -- удаление из таблицы пользователей CONSTRAINT TRIGGER и TRIGGER
-DROP TRIGGER "check_username" ON public.users;
-DROP TRIGGER "auto_bio" ON public.users;
+DROP TRIGGER IF EXISTS "check_username" ON public.users;
+DROP TRIGGER IF EXISTS "auto_bio" ON public.users;
