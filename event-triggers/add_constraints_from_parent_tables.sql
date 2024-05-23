@@ -27,17 +27,32 @@ BEGIN
             -- получение текущей дочерней таблицы
             "child" = "command".objid;
             -- добавление ограничений в курсор constraints
+            -- LIMIT 1 - потому что запрос ALTER TABLE в цикле ниже
+            -- запускает опять этот же триггер и снова выполняется эта команда
+            -- происходит рекурсия, которую нельзя контролировать,
+            -- так как нет указателя на текущую глубину рекурсии
             OPEN "constraints" FOR
                 SELECT * FROM get_constraints() "c"
-                WHERE "c"."childrelid" = "child" AND "c"."is_inherited" = FALSE;
+                WHERE "c"."childrelid" = "child" AND "c"."is_inherited" = FALSE
+                LIMIT 1;
         -- если редактируется таблица
         ELSEIF "command".command_tag = 'ALTER TABLE' THEN
             -- получение текущей родительской таблицы
+            -- при добавлении ограничения
             "parent" = "command".objid;
+            -- получение текущей дочерней таблицы
+            -- при изменении наследования
+            "child" = "command".objid;
             -- добавление ограничений в курсор constraints
+            -- LIMIT 1 - потому что запрос ALTER TABLE в цикле ниже
+            -- запускает опять этот же триггер и снова выполняется эта команда
+            -- происходит рекурсия, которую нельзя контролировать,
+            -- так как нет указателя на текущую глубину рекурсии
             OPEN "constraints" FOR
                 SELECT * FROM get_constraints() "c"
-                WHERE "c"."parentrelid" = "parent" AND "c"."is_inherited" = FALSE;
+                WHERE ("c"."parentrelid" = "parent" OR "c"."childrelid" = "child")
+                  AND "c"."is_inherited" = FALSE
+                LIMIT 1;
         ELSE
             -- пропустить обработку дальше, так как могут быть
             -- CREATE SEQUENCE, ALTER SEQUENCE, CREATE INDEX

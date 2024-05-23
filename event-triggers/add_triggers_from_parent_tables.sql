@@ -30,6 +30,15 @@ BEGIN
             OPEN "triggers" FOR
                 SELECT * FROM get_triggers() "t"
                 WHERE "t"."childrelid" = "child" AND "t"."is_inherited" = FALSE;
+        -- если редактируется таблица
+        ELSEIF "command".command_tag = 'ALTER TABLE' THEN
+            -- получение текущей дочерней таблицы
+            -- при изменении наследования
+            "child" = "command".objid;
+            -- добавление ограничений в курсор triggers
+            OPEN "triggers" FOR
+                SELECT * FROM get_triggers() "t"
+                WHERE "t"."childrelid" = "child" AND "t"."is_inherited" = FALSE;
         -- если создается триггер
         ELSEIF "command".command_tag = 'CREATE TRIGGER' THEN
             -- "command".objid - OID триггера
