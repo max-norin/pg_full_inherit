@@ -1,76 +1,29 @@
--- таблица городов
-CREATE TABLE public.cities
+-- таблица пользователей с PRIMARY KEY, UNIQUE, FOREIGN KEY, CONSTRAINT TRIGGER, TRIGGER
+CREATE TABLE public.users
 (
-    id   SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
+    id       SERIAL PRIMARY KEY,
+    email    VARCHAR(255) NOT NULL UNIQUE,
+    username VARCHAR(255) NOT NULL,
+    city_id  INT          NOT NULL,
+    FOREIGN KEY (city_id) REFERENCES public.cities (id)
 );
--- таблица языков
-CREATE TABLE public.langs
+-- добавление CONSTRAINT TRIGGER к таблице пользователей
+CREATE CONSTRAINT TRIGGER "check_email"
+    AFTER INSERT OR UPDATE
+    ON public.users
+    FOR EACH ROW
+EXECUTE FUNCTION public.trigger_check_email();
+-- добавление TRIGGER к таблице пользователей
+CREATE TRIGGER "lower_username"
+    BEFORE INSERT OR UPDATE
+    ON public.users
+    FOR EACH ROW
+EXECUTE FUNCTION public.trigger_lower_username();
+
+
+-----------------------------------------------------------
+CREATE TABLE public.full_users
 (
-    id   SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
-);
-
-
--- триггер функция на проверку email
-CREATE FUNCTION public.trigger_check_email()
-    RETURNS TRIGGER
-AS
-$$
-BEGIN
-    IF (strpos(NEW.email, '@') = 0) THEN
-        RAISE EXCEPTION 'email is not valid';
-    END IF;
-
-    RETURN NEW;
-END
-$$
-    LANGUAGE plpgsql
-    VOLATILE
-    SECURITY DEFINER;
--- триггер функция для преобразование имени пользователя в нижний регистр
-CREATE FUNCTION public.trigger_lower_username()
-    RETURNS TRIGGER
-AS
-$$
-BEGIN
-    NEW.username = lower(NEW.username);
-
-    RETURN NEW;
-END
-$$
-    LANGUAGE plpgsql
-    VOLATILE
-    SECURITY DEFINER;
--- триггер функция на проверку username
-CREATE FUNCTION public.trigger_check_username()
-    RETURNS TRIGGER
-AS
-$$
-BEGIN
-    IF (NEW.username ~* '^[a-z0-9]+$') THEN
-        RAISE EXCEPTION 'username is not valid';
-    END IF;
-
-    RETURN NEW;
-END
-$$
-    LANGUAGE plpgsql
-    VOLATILE
-    SECURITY DEFINER;
--- триггер функция для заполнения пустой биографии
-CREATE FUNCTION public.trigger_auto_bio()
-    RETURNS TRIGGER
-AS
-$$
-BEGIN
-    IF (NEW.bio IS NULL OR length(NEW.bio) = 0) THEN
-        NEW.bio = '----';
-    END IF;
-
-    RETURN NEW;
-END
-$$
-    LANGUAGE plpgsql
-    VOLATILE
-    SECURITY DEFINER;
+    name VARCHAR(255) NOT NULL,
+    bio  VARCHAR(255)
+) INHERITS (public.users);
