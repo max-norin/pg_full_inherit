@@ -29,7 +29,8 @@ BEGIN
                "cc"."tgdef" IS NOT NULL AS "is_inherited"
         FROM "pg_inherits" "i"
                  LEFT JOIN "triggers" "pc" ON "i"."inhparent" = "pc"."tgrelid"
-                 LEFT JOIN "triggers" "cc" ON "i"."inhrelid" = "cc"."tgrelid" AND "pc"."tgdef" = "cc"."tgdef"
+                 LEFT JOIN "triggers" "cc" ON "i"."inhrelid" = "cc"."tgrelid"
+                      AND "pc"."tgdef" = replace ("cc"."tgdef", "i"."inhrelid"::REGCLASS::TEXT, "i"."inhparent"::REGCLASS::TEXT)
         WHERE "pc"."oid" IS NOT NULL OR "cc"."oid" IS NOT NULL;
 END
 $$
