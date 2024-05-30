@@ -1,6 +1,7 @@
--- удаление из таблицы пользователей UNIQUE (username) и FOREIGN KEY (lang_id) REFERENCES langs (id)
+-- удаление из таблицы пользователей UNIQUE (username)
 ALTER TABLE public.users
     DROP CONSTRAINT users_username_ukey;
+-- удаление из таблицы пользователей FOREIGN KEY (lang_id) REFERENCES langs (id)
 ALTER TABLE public.users
     DROP CONSTRAINT users_lang_id_fkey;
 -- удаление из таблицы пользователей колонки с FOREIGN KEY (city_id) REFERENCES cities (id)
