@@ -12,8 +12,6 @@ LANGUAGE plpgsql
 IMMUTABLE
 RETURNS NULL ON NULL INPUT;
 
-COMMENT ON FUNCTION @extschema@.get_child_constraint_name (TEXT, TEXT, TEXT) IS '';
-
 CREATE FUNCTION @extschema@.get_child_trigger_name ("name" TEXT, "parent" TEXT, "child" TEXT)
     RETURNS TEXT
 AS $$
@@ -24,8 +22,6 @@ $$
 LANGUAGE plpgsql
 IMMUTABLE
 RETURNS NULL ON NULL INPUT;
-
-COMMENT ON FUNCTION @extschema@.get_child_trigger_name (TEXT, TEXT, TEXT) IS '';
 /*
 =================== GET_INHERIT_CONSTRAINTS ===================
 */
@@ -65,8 +61,6 @@ $$
 LANGUAGE plpgsql
 STABLE
 RETURNS NULL ON NULL INPUT;
-
-COMMENT ON FUNCTION @extschema@.get_inherit_constraints () IS '';
 /*
 =================== GET_INHERIT_TRIGGERS ===================
 */
@@ -107,8 +101,6 @@ $$
 LANGUAGE plpgsql
 STABLE
 RETURNS NULL ON NULL INPUT;
-
-COMMENT ON FUNCTION @extschema@.get_inherit_triggers () IS '';
 /*
 =================== EVENT_TRIGGER_ADD_INHERIT_CONSTRAINTS ===================
 */
