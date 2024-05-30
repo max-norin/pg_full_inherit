@@ -1,7 +1,7 @@
 /*
 =================== NAME ===================
 */
-CREATE FUNCTION public.get_child_constraint_name ("name" TEXT, "parent" TEXT, "child" TEXT)
+CREATE FUNCTION @extschema@.get_child_constraint_name ("name" TEXT, "parent" TEXT, "child" TEXT)
     RETURNS TEXT
 AS $$
 BEGIN
@@ -12,9 +12,9 @@ LANGUAGE plpgsql
 IMMUTABLE
 RETURNS NULL ON NULL INPUT;
 
-COMMENT ON FUNCTION public.get_child_constraint_name (TEXT, TEXT, TEXT) IS '';
+COMMENT ON FUNCTION @extschema@.get_child_constraint_name (TEXT, TEXT, TEXT) IS '';
 
-CREATE FUNCTION public.get_child_trigger_name ("name" TEXT, "parent" TEXT, "child" TEXT)
+CREATE FUNCTION @extschema@.get_child_trigger_name ("name" TEXT, "parent" TEXT, "child" TEXT)
     RETURNS TEXT
 AS $$
 BEGIN
@@ -25,11 +25,11 @@ LANGUAGE plpgsql
 IMMUTABLE
 RETURNS NULL ON NULL INPUT;
 
-COMMENT ON FUNCTION public.get_child_trigger_name (TEXT, TEXT, TEXT) IS '';
+COMMENT ON FUNCTION @extschema@.get_child_trigger_name (TEXT, TEXT, TEXT) IS '';
 /*
 =================== GET_INHERIT_CONSTRAINTS ===================
 */
-CREATE FUNCTION public.get_inherit_constraints ()
+CREATE FUNCTION @extschema@.get_inherit_constraints ()
     RETURNS TABLE
             (
                 "def"          TEXT,
@@ -66,11 +66,11 @@ LANGUAGE plpgsql
 STABLE
 RETURNS NULL ON NULL INPUT;
 
-COMMENT ON FUNCTION public.get_inherit_constraints () IS '';
+COMMENT ON FUNCTION @extschema@.get_inherit_constraints () IS '';
 /*
 =================== GET_INHERIT_TRIGGERS ===================
 */
-CREATE FUNCTION public.get_inherit_triggers ()
+CREATE FUNCTION @extschema@.get_inherit_triggers ()
     RETURNS TABLE
             (
                 "def"          TEXT,
@@ -108,11 +108,11 @@ LANGUAGE plpgsql
 STABLE
 RETURNS NULL ON NULL INPUT;
 
-COMMENT ON FUNCTION public.get_inherit_triggers () IS '';
+COMMENT ON FUNCTION @extschema@.get_inherit_triggers () IS '';
 /*
 =================== EVENT_TRIGGER_ADD_INHERIT_CONSTRAINTS ===================
 */
-CREATE FUNCTION public.event_trigger_add_inherit_constraints ()
+CREATE FUNCTION @extschema@.event_trigger_add_inherit_constraints ()
     RETURNS EVENT_TRIGGER
 AS $$
 DECLARE
@@ -153,7 +153,7 @@ BEGIN
             FETCH NEXT FROM "constraints" INTO "constraint";
             EXIT WHEN "constraint" IS NULL;
 
-            "name" = public.get_child_constraint_name("constraint"."parentname", "constraint"."parentrelid"::REGCLASS::TEXT, "constraint"."childrelid"::REGCLASS::TEXT);
+            "name" = @extschema@.get_child_constraint_name("constraint"."parentname", "constraint"."parentrelid"::REGCLASS::TEXT, "constraint"."childrelid"::REGCLASS::TEXT);
             "query" = format('ALTER TABLE %1I ADD CONSTRAINT %2I %3s;', "constraint"."childrelid"::REGCLASS, "name", "constraint"."def");
             RAISE NOTICE USING MESSAGE = format('-- ADD CONSTRAINT %1I TO %2I TABLE FROM %3I TABLE', "name", "constraint"."childrelid"::REGCLASS, "constraint"."parentrelid"::REGCLASS);
             RAISE NOTICE USING MESSAGE = "query";
@@ -168,7 +168,7 @@ VOLATILE;
 /*
 =================== EVENT_TRIGGER_ADD_INHERIT_TRIGGERS ===================
 */
-CREATE FUNCTION public.event_trigger_add_inherit_triggers ()
+CREATE FUNCTION @extschema@.event_trigger_add_inherit_triggers ()
     RETURNS EVENT_TRIGGER
 AS $$
 DECLARE
@@ -210,7 +210,7 @@ BEGIN
             FETCH NEXT FROM "triggers" INTO "trigger";
             EXIT WHEN "trigger" IS NULL;
 
-            "name" = public.get_child_trigger_name("trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
+            "name" = @extschema@.get_child_trigger_name("trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
             "query" = replace ("trigger"."def", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT) || ';';
             RAISE NOTICE USING MESSAGE = format('-- ADD TRIGGER %1I TO %2I TABLE FROM %3I TABLE', "name", "trigger"."childrelid"::REGCLASS, "trigger"."parentrelid"::REGCLASS);
             RAISE NOTICE USING MESSAGE = format("query");
@@ -225,7 +225,7 @@ VOLATILE;
 /*
 =================== EVENT_TRIGGER_DROP_INHERIT_CONSTRAINTS ===================
 */
-CREATE FUNCTION public.event_trigger_drop_inherit_constraints ()
+CREATE FUNCTION @extschema@.event_trigger_drop_inherit_constraints ()
     RETURNS EVENT_TRIGGER
 AS $$
 DECLARE
@@ -248,7 +248,7 @@ BEGIN
             FOR "child" IN
             SELECT inhrelid FROM pg_inherits WHERE inhparent = "parent"
             LOOP
-                "name" = public.get_child_constraint_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
+                "name" = @extschema@.get_child_constraint_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
                 "query" = format('ALTER TABLE %1s DROP CONSTRAINT IF EXISTS %2s;', "child"::REGCLASS, "name");
                 RAISE NOTICE USING MESSAGE = format('-- DROP CONSTRAINT %1s FROM %2s TABLE BASED ON DEPENDENCY ON %3s TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
                 RAISE NOTICE USING MESSAGE = format("query");
@@ -263,7 +263,7 @@ VOLATILE;
 /*
 =================== EVENT_TRIGGER_DROP_INHERIT_TRIGGERS ===================
 */
-CREATE FUNCTION public.event_trigger_drop_inherit_triggers ()
+CREATE FUNCTION @extschema@.event_trigger_drop_inherit_triggers ()
     RETURNS EVENT_TRIGGER
 AS $$
 DECLARE
@@ -286,7 +286,7 @@ BEGIN
             FOR "child" IN
             SELECT inhrelid FROM pg_inherits WHERE inhparent = "parent"
             LOOP
-                "name" = public.get_child_trigger_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
+                "name" = @extschema@.get_child_trigger_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
                 "query" = format('DROP TRIGGER IF EXISTS %1s ON %2s;', "name", "child"::REGCLASS);
                 RAISE NOTICE USING MESSAGE = format('-- DROP TRIGGER %1s FROM %2s TABLE BASED ON DEPENDENCY ON %3s TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
                 RAISE NOTICE USING MESSAGE = format("query");
@@ -303,16 +303,16 @@ VOLATILE;
 */
 CREATE EVENT TRIGGER "add_inherit_constraints" ON ddl_command_end
     WHEN TAG IN ('CREATE TABLE', 'ALTER TABLE')
-EXECUTE PROCEDURE public.event_trigger_add_inherit_constraints ();
+EXECUTE PROCEDURE @extschema@.event_trigger_add_inherit_constraints ();
 
 CREATE EVENT TRIGGER "drop_inherit_constraints" ON sql_drop
     WHEN TAG IN ('ALTER TABLE')
-EXECUTE PROCEDURE public.event_trigger_drop_inherit_constraints ();
+EXECUTE PROCEDURE @extschema@.event_trigger_drop_inherit_constraints ();
 
 CREATE EVENT TRIGGER "add_inherit_triggers" ON ddl_command_end
     WHEN TAG IN ('CREATE TABLE', 'ALTER TABLE', 'CREATE TRIGGER')
-EXECUTE PROCEDURE public.event_trigger_add_inherit_triggers ();
+EXECUTE PROCEDURE @extschema@.event_trigger_add_inherit_triggers ();
 
 CREATE EVENT TRIGGER "drop_inherit_triggers" ON sql_drop
     WHEN TAG IN ('DROP TRIGGER')
-EXECUTE PROCEDURE public.event_trigger_drop_inherit_triggers ();
+EXECUTE PROCEDURE @extschema@.event_trigger_drop_inherit_triggers ();
