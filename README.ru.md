@@ -6,7 +6,8 @@
 
 Важное замечание: при удалении наследования командой
 `ALTER TABLE public.new_users NO INHERIT public.users;`
-никакие действия не произойдут.
+никаких действий не произойдёт. Таблица будет иметь
+те же столбцы, ограничения и триггеры, как при наследовании.
 
 # Установка
 
@@ -137,8 +138,8 @@ EXECUTE FUNCTION trigger_check_email();
 Решения:
 
 - переименуйте существующие ограничения или триггеры
-- измените именование ограничений или триггеров с помощью функций 
-`get_child_constraint_name` и `get_child_trigger_name`
+- измените именование ограничений или триггеров с помощью функций
+  `get_child_constraint_name` и `get_child_trigger_name`
 
 ## Включение и отключение наследования
 
@@ -173,9 +174,9 @@ EXECUTE FUNCTION trigger_check_email();
 
 # Примеры работы
 
-## Создание Родительской таблицы
-
 Для примера используются таблицы и триггеры из [/test/init.sql](/test/init.sql).
+
+## Создание Родительской таблицы
 
 ```postgresql
 -- таблица пользователей с PRIMARY KEY, UNIQUE, FOREIGN KEY, CONSTRAINT TRIGGER, TRIGGER
@@ -201,14 +202,10 @@ CREATE TRIGGER "lower_username"
 EXECUTE FUNCTION public.trigger_lower_username();
 ```
 
-Ответ в консоли
-
-```postgresql
-```
-
 ## Создание Дочерней таблицы
 
 ```postgresql
+-- дочерняя таблица пользователей
 CREATE TABLE public.full_users
 (
     name VARCHAR(255) NOT NULL,
@@ -219,4 +216,87 @@ CREATE TABLE public.full_users
 Ответ в консоли
 
 ```postgresql
+-- TODO
 ```
+
+## Изменения Родительской таблицы
+
+```postgresql
+-- добавить в таблицу пользователей новые UNIQUE, FOREIGN KEY
+ALTER TABLE public.users
+    ADD CONSTRAINT users_username_ukey UNIQUE (username),
+    ADD COLUMN lang_id INT,
+    ADD CONSTRAINT users_lang_id_fkey FOREIGN KEY (lang_id) REFERENCES langs (id);
+-- добавление CONSTRAINT TRIGGER к таблице пользователей
+CREATE CONSTRAINT TRIGGER "check_username"
+    AFTER INSERT OR UPDATE
+    ON public.users
+    FOR EACH ROW
+EXECUTE FUNCTION public.trigger_check_username();
+-- добавление TRIGGER к таблице пользователей
+CREATE TRIGGER "auto_bio"
+    BEFORE INSERT OR UPDATE
+    ON public.users
+    FOR EACH ROW
+EXECUTE FUNCTION public.trigger_auto_bio();
+```
+
+Ответ в консоли
+
+```postgresql
+-- TODO
+```
+
+## Изменения Родительской таблицы
+
+```postgresql
+-- удаление из таблицы пользователей UNIQUE (username) и FOREIGN KEY (lang_id) REFERENCES langs (id)
+ALTER TABLE public.users
+    DROP CONSTRAINT users_username_ukey;
+ALTER TABLE public.users
+    DROP CONSTRAINT users_lang_id_fkey;
+-- удаление из таблицы пользователей колонки с FOREIGN KEY (city_id) REFERENCES cities (id)
+ALTER TABLE public.users
+    DROP COLUMN city_id;
+-- удаление из таблицы пользователей CONSTRAINT TRIGGER и TRIGGER
+DROP TRIGGER IF EXISTS "check_username" ON public.users;
+DROP TRIGGER IF EXISTS "auto_bio" ON public.users;
+```
+
+Ответ в консоли
+
+```postgresql
+-- TODO
+```
+
+## Создание таблицы и определение её как Дочерней таблицы
+
+```postgresql
+-- таблица аналогичная таблице пользователей, но без ограничений и триггеров
+CREATE TABLE public.new_users
+(
+    id       INTEGER      NOT NULL,
+    email    VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    city_id  INT          NOT NULL,
+    is_new   BOOLEAN      NOT NULL
+);
+-- определение таблицы, как дочерней
+ALTER TABLE public.new_users
+    INHERIT public.users;
+```
+
+Ответ в консоли
+
+```postgresql
+-- TODO
+```
+
+## Снятие наследования Дочерней таблицы
+
+```postgresql
+ALTER TABLE public.new_users
+    NO INHERIT public.users;
+```
+
+Таблица перестанет быть наследованной, но никаких действий не произойдет.
