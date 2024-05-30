@@ -53,32 +53,32 @@ Copy it to the PostgreSQL console and run it.
 The extension works with the following commands and their variations.
 
 ```sql
--- создание дочерней таблицы
+-- creating the child table
 CREATE TABLE public.full_users
 (
 ) INHERITS (public.users);
--- добавления наследования к таблице 
+-- adding inheritance to the table
 ALTER TABLE public.new_users
     INHERIT public.users;
--- добавление ограничений PRIMARY KEY, UNIQUE, FOREIGN KEY к родительской таблице
+-- adding PRIMARY KEY, UNIQUE, FOREIGN KEY constraints to the parent table
 ALTER TABLE public.users
     ADD CONSTRAINT users_username_ukey UNIQUE (username),
     ADD COLUMN lang_id INT,
     ADD CONSTRAINT users_lang_id_fkey FOREIGN KEY (lang_id) REFERENCES langs (id);
--- удаление ограничений
+-- deleting the constraint from the parent table
 ALTER TABLE public.users
     DROP CONSTRAINT users_username_ukey;
 ALTER TABLE public.users
     DROP CONSTRAINT users_lang_id_fkey;
 ALTER TABLE public.users
     DROP COLUMN lang_id;
--- добавление триггера к родительской таблице
+-- adding the trigger to the parent table
 CREATE CONSTRAINT TRIGGER "check_username"
     AFTER INSERT OR UPDATE
     ON public.users
     FOR EACH ROW
 EXECUTE FUNCTION public.trigger_check_username();
--- удаление триггера у родительской таблицы
+-- deleting the trigger from the parent table
 DROP TRIGGER IF EXISTS "check_username" ON public.users;
 ```
 
@@ -143,16 +143,16 @@ You can enable or disable creating and deleting constraints
 and triggers using the commands.
 
 ```sql
--- отключение событийного триггера
+-- disabling the event trigger
 ALTER EVENT TRIGGER имя_событийного_триггера DISABLE;
--- включение событийного триггера
+-- enabling the event trigger
 ALTER EVENT TRIGGER имя_событийного_триггера ENABLE;
 ```
 
 There are 4 triggers in total:
 
-- `add_inherit_constraints` - event trigger for adding constrains
-- `drop_inherit_constraints` - event trigger for removing constrains
+- `add_inherit_constraints` - event trigger for adding constraints
+- `drop_inherit_constraints` - event trigger for removing constraints
 - `add_inherit_triggers` - event trigger for adding triggers
 - `drop_inherit_triggers` - event trigger for deleting triggers
 
@@ -173,7 +173,7 @@ This example uses tables and triggers from [/test/init.sql](/test/init.sql).
 ## Creating a Parent Table
 
 ```sql
--- таблица пользователей с PRIMARY KEY, UNIQUE, FOREIGN KEY, CONSTRAINT TRIGGER, TRIGGER
+-- users table with PRIMARY KEY, UNIQUE, FOREIGN KEY, CONSTRAINT TRIGGER, TRIGGER
 CREATE TABLE public.users
 (
     id       SERIAL PRIMARY KEY,
@@ -182,13 +182,13 @@ CREATE TABLE public.users
     city_id  INT          NOT NULL,
     FOREIGN KEY (city_id) REFERENCES public.cities (id)
 );
--- добавление CONSTRAINT TRIGGER к таблице пользователей
+-- adding CONSTRAINT TRIGGER to users table
 CREATE CONSTRAINT TRIGGER "check_email"
     AFTER INSERT OR UPDATE
     ON public.users
     FOR EACH ROW
 EXECUTE FUNCTION public.trigger_check_email();
--- добавление TRIGGER к таблице пользователей
+-- adding TRIGGER to users table
 CREATE TRIGGER "lower_username"
     BEFORE INSERT OR UPDATE
     ON public.users
@@ -199,7 +199,7 @@ EXECUTE FUNCTION public.trigger_lower_username();
 ## Creating a Child Table
 
 ```sql
--- дочерняя таблица пользователей
+-- users child table
 CREATE TABLE public.full_users
 (
     name VARCHAR(255) NOT NULL,
@@ -225,18 +225,18 @@ CREATE TRIGGER lower_username BEFORE INSERT OR UPDATE ON public.full_users FOR E
 ## Changes to the Parent Table
 
 ```sql
--- добавить в таблицу пользователей новые UNIQUE, FOREIGN KEY
+-- adding UNIQUE, FOREIGN KEY to users table
 ALTER TABLE public.users
     ADD CONSTRAINT users_username_ukey UNIQUE (username),
     ADD COLUMN lang_id INT,
     ADD CONSTRAINT users_lang_id_fkey FOREIGN KEY (lang_id) REFERENCES langs (id);
--- добавление CONSTRAINT TRIGGER к таблице пользователей
+-- adding CONSTRAINT TRIGGER to users table
 CREATE CONSTRAINT TRIGGER "check_username"
     AFTER INSERT OR UPDATE
     ON public.users
     FOR EACH ROW
 EXECUTE FUNCTION public.trigger_check_username();
--- добавление TRIGGER к таблице пользователей
+-- adding TRIGGER to users table
 CREATE TRIGGER "auto_bio"
     BEFORE INSERT OR UPDATE
     ON public.users
@@ -262,16 +262,16 @@ CREATE TRIGGER auto_bio BEFORE INSERT OR UPDATE ON public.full_users FOR EACH RO
 ## Changes to the Parent Table
 
 ```sql
--- удаление из таблицы пользователей UNIQUE (username)
+-- deleting UNIQUE (username) from user table
 ALTER TABLE public.users
   DROP CONSTRAINT users_username_ukey;
--- удаление из таблицы пользователей FOREIGN KEY (lang_id) REFERENCES langs (id)
+-- deleting FOREIGN KEY (lang_id) REFERENCES langs (id) from user table
 ALTER TABLE public.users
   DROP CONSTRAINT users_lang_id_fkey;
--- удаление из таблицы пользователей колонки с FOREIGN KEY (city_id) REFERENCES cities (id)
+-- deleting city_id column from user table
 ALTER TABLE public.users
   DROP COLUMN city_id;
--- удаление из таблицы пользователей CONSTRAINT TRIGGER и TRIGGER
+-- deleting CONSTRAINT TRIGGER and TRIGGER from user table
 DROP TRIGGER IF EXISTS "check_username" ON public.users;
 DROP TRIGGER IF EXISTS "auto_bio" ON public.users;
 ```
@@ -298,7 +298,7 @@ DROP TRIGGER IF EXISTS auto_bio ON full_users;
 ## Creating a table and defining it as a Child table
 
 ```sql
--- таблица аналогичная таблице пользователей, но без ограничений и триггеров
+-- the table is similar to users table, but without constraint and triggers
 CREATE TABLE public.new_users
 (
     id       INTEGER      NOT NULL,
@@ -308,7 +308,7 @@ CREATE TABLE public.new_users
     lang_id  INT          NOT NULL,
     is_new   BOOLEAN      NOT NULL
 );
--- определение таблицы, как дочерней
+-- defining a table as a child
 ALTER TABLE public.new_users
     INHERIT public.users;
 ```
