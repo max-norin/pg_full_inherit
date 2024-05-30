@@ -1,0 +1,4 @@
+comment = 'full inherit'
+default_version = '1.0'
+module_pathname = '$libdir/pg_full_inherit'
+relocatable = false
