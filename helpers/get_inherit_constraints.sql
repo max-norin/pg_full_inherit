@@ -1,4 +1,4 @@
-CREATE FUNCTION public.get_constraints ()
+CREATE FUNCTION public.get_inherit_constraints ()
     RETURNS TABLE
             (
                 "def"          TEXT,
@@ -37,4 +37,4 @@ LANGUAGE plpgsql
 STABLE -- функция не может модифицировать базу данных и всегда возвращает один и тот же результат при определённых значениях аргументов внутри одного SQL запроса
 RETURNS NULL ON NULL INPUT; -- функция всегда возвращает NULL, получив NULL в одном из аргументов
 
-COMMENT ON FUNCTION public.get_constraints () IS '';
+COMMENT ON FUNCTION public.get_inherit_constraints () IS '';

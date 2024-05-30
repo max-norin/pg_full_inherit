@@ -27,7 +27,7 @@ BEGIN
             "child" = "command".objid;
             -- добавление ограничений в курсор triggers
             OPEN "triggers" FOR
-                SELECT * FROM get_triggers() "t"
+                SELECT * FROM get_inherit_triggers() "t"
                 WHERE "t"."childrelid" = "child" AND "t"."is_inherited" = FALSE;
         -- если редактируется таблица
         ELSEIF "command".command_tag = 'ALTER TABLE' THEN
@@ -36,7 +36,7 @@ BEGIN
             "child" = "command".objid;
             -- добавление ограничений в курсор triggers
             OPEN "triggers" FOR
-                SELECT * FROM get_triggers() "t"
+                SELECT * FROM get_inherit_triggers() "t"
                 WHERE "t"."childrelid" = "child" AND "t"."is_inherited" = FALSE;
         -- если создается триггер
         ELSEIF "command".command_tag = 'CREATE TRIGGER' THEN
@@ -44,7 +44,7 @@ BEGIN
             "triggerid" = "command".objid;
             -- добавление ограничений в курсор triggers
             OPEN "triggers" FOR
-                SELECT * FROM get_triggers() "t"
+                SELECT * FROM get_inherit_triggers() "t"
                 WHERE "t"."parentid" = "triggerid" AND "t"."is_inherited" = FALSE;
         ELSE
             -- пропустить обработку дальше, так как могут быть

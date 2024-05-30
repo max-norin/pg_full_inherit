@@ -31,7 +31,7 @@ BEGIN
             -- происходит рекурсия, которую нельзя контролировать,
             -- так как нет указателя на текущую глубину рекурсии
             OPEN "constraints" FOR
-                SELECT * FROM get_constraints() "c"
+                SELECT * FROM get_inherit_constraints() "c"
                 WHERE "c"."childrelid" = "child" AND "c"."is_inherited" = FALSE
                 LIMIT 1;
         -- если редактируется таблица
@@ -48,7 +48,7 @@ BEGIN
             -- происходит рекурсия, которую нельзя контролировать,
             -- так как нет указателя на текущую глубину рекурсии
             OPEN "constraints" FOR
-                SELECT * FROM get_constraints() "c"
+                SELECT * FROM get_inherit_constraints() "c"
                 WHERE ("c"."parentrelid" = "parent" OR "c"."childrelid" = "child")
                   AND "c"."is_inherited" = FALSE
                 LIMIT 1;
