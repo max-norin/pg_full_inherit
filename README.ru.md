@@ -84,26 +84,15 @@ DROP TRIGGER IF EXISTS "check_username" ON public.users;
 
 ```postgresql
 -- ADD CONSTRAINT full_users_city_id_fkey TO full_users TABLE FROM users TABLE
-ALTER TABLE full_users
-    ADD CONSTRAINT full_users_city_id_fkey FOREIGN KEY (city_id) REFERENCES cities (id);
+ALTER TABLE full_users ADD CONSTRAINT full_users_city_id_fkey FOREIGN KEY (city_id) REFERENCES cities(id);
 -- ADD CONSTRAINT full_users_pkey TO full_users TABLE FROM users TABLE
-ALTER TABLE full_users
-    ADD CONSTRAINT full_users_pkey PRIMARY KEY (id);
+ALTER TABLE full_users ADD CONSTRAINT full_users_pkey PRIMARY KEY (id);
 -- ADD CONSTRAINT full_users_email_key TO full_users TABLE FROM users TABLE
-ALTER TABLE full_users
-    ADD CONSTRAINT full_users_email_key UNIQUE (email);
--- ADD TRIGGER lower_username TO full_users TABLE FROM users TABLE
-CREATE TRIGGER lower_username
-    BEFORE INSERT OR UPDATE
-    ON public.full_users
-    FOR EACH ROW
-EXECUTE FUNCTION trigger_lower_username();
+ALTER TABLE full_users ADD CONSTRAINT full_users_email_key UNIQUE (email);
 -- ADD TRIGGER check_email TO full_users TABLE FROM users TABLE
-CREATE CONSTRAINT TRIGGER check_email
-    AFTER INSERT OR UPDATE
-    ON public.full_users NOT DEFERRABLE INITIALLY IMMEDIATE
-    FOR EACH ROW
-EXECUTE FUNCTION trigger_check_email();
+CREATE CONSTRAINT TRIGGER check_email AFTER INSERT OR UPDATE ON public.full_users NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE FUNCTION trigger_check_email();
+-- ADD TRIGGER lower_username TO full_users TABLE FROM users TABLE
+CREATE TRIGGER lower_username BEFORE INSERT OR UPDATE ON public.full_users FOR EACH ROW EXECUTE FUNCTION trigger_lower_username();
 ```
 
 ## Именование
@@ -148,9 +137,9 @@ EXECUTE FUNCTION trigger_check_email();
 
 ```postgresql
 -- отключение событийного триггера
-    ALTER EVENT TRIGGER имя_событийного_триггера DISABLE;
+ALTER EVENT TRIGGER имя_событийного_триггера DISABLE;
 -- включение событийного триггера
-    ALTER EVENT TRIGGER имя_событийного_триггера ENABLE;
+ALTER EVENT TRIGGER имя_событийного_триггера ENABLE;
 ```
 
 Всего есть 4 триггера:
@@ -216,7 +205,16 @@ CREATE TABLE public.full_users
 Ответ в консоли
 
 ```postgresql
--- TODO
+-- ADD CONSTRAINT full_users_city_id_fkey TO full_users TABLE FROM users TABLE
+ALTER TABLE full_users ADD CONSTRAINT full_users_city_id_fkey FOREIGN KEY (city_id) REFERENCES cities(id);
+-- ADD CONSTRAINT full_users_pkey TO full_users TABLE FROM users TABLE
+ALTER TABLE full_users ADD CONSTRAINT full_users_pkey PRIMARY KEY (id);
+-- ADD CONSTRAINT full_users_email_key TO full_users TABLE FROM users TABLE
+ALTER TABLE full_users ADD CONSTRAINT full_users_email_key UNIQUE (email);
+-- ADD TRIGGER check_email TO full_users TABLE FROM users TABLE
+CREATE CONSTRAINT TRIGGER check_email AFTER INSERT OR UPDATE ON public.full_users NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE FUNCTION trigger_check_email();
+-- ADD TRIGGER lower_username TO full_users TABLE FROM users TABLE
+CREATE TRIGGER lower_username BEFORE INSERT OR UPDATE ON public.full_users FOR EACH ROW EXECUTE FUNCTION trigger_lower_username();
 ```
 
 ## Изменения Родительской таблицы
@@ -244,20 +242,30 @@ EXECUTE FUNCTION public.trigger_auto_bio();
 Ответ в консоли
 
 ```postgresql
--- TODO
+-- ADD CONSTRAINT full_users_username_ukey TO full_users TABLE FROM users TABLE
+ALTER TABLE full_users ADD CONSTRAINT full_users_username_ukey UNIQUE (username);
+-- ADD CONSTRAINT full_users_lang_id_fkey TO full_users TABLE FROM users TABLE
+ALTER TABLE full_users ADD CONSTRAINT full_users_lang_id_fkey FOREIGN KEY (lang_id) REFERENCES langs(id);
+
+-- ADD TRIGGER check_username TO full_users TABLE FROM users TABLE
+CREATE CONSTRAINT TRIGGER check_username AFTER INSERT OR UPDATE ON public.full_users NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE FUNCTION trigger_check_username();
+
+-- ADD TRIGGER auto_bio TO full_users TABLE FROM users TABLE
+CREATE TRIGGER auto_bio BEFORE INSERT OR UPDATE ON public.full_users FOR EACH ROW EXECUTE FUNCTION trigger_auto_bio();
 ```
 
 ## Изменения Родительской таблицы
 
 ```postgresql
--- удаление из таблицы пользователей UNIQUE (username) и FOREIGN KEY (lang_id) REFERENCES langs (id)
+-- удаление из таблицы пользователей UNIQUE (username)
 ALTER TABLE public.users
-    DROP CONSTRAINT users_username_ukey;
+  DROP CONSTRAINT users_username_ukey;
+-- удаление из таблицы пользователей FOREIGN KEY (lang_id) REFERENCES langs (id)
 ALTER TABLE public.users
-    DROP CONSTRAINT users_lang_id_fkey;
+  DROP CONSTRAINT users_lang_id_fkey;
 -- удаление из таблицы пользователей колонки с FOREIGN KEY (city_id) REFERENCES cities (id)
 ALTER TABLE public.users
-    DROP COLUMN city_id;
+  DROP COLUMN city_id;
 -- удаление из таблицы пользователей CONSTRAINT TRIGGER и TRIGGER
 DROP TRIGGER IF EXISTS "check_username" ON public.users;
 DROP TRIGGER IF EXISTS "auto_bio" ON public.users;
@@ -266,7 +274,20 @@ DROP TRIGGER IF EXISTS "auto_bio" ON public.users;
 Ответ в консоли
 
 ```postgresql
--- TODO
+-- DROP CONSTRAINT full_users_username_ukey FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
+ALTER TABLE full_users DROP CONSTRAINT IF EXISTS full_users_username_ukey;
+
+-- DROP CONSTRAINT full_users_lang_id_fkey FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
+ALTER TABLE full_users DROP CONSTRAINT IF EXISTS full_users_lang_id_fkey;
+
+-- DROP CONSTRAINT full_users_city_id_fkey FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
+ALTER TABLE full_users DROP CONSTRAINT IF EXISTS full_users_city_id_fkey;
+
+-- DROP TRIGGER check_username FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
+DROP TRIGGER IF EXISTS check_username ON full_users;
+
+-- DROP TRIGGER auto_bio FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
+DROP TRIGGER IF EXISTS auto_bio ON full_users;
 ```
 
 ## Создание таблицы и определение её как Дочерней таблицы
@@ -279,6 +300,7 @@ CREATE TABLE public.new_users
     email    VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     city_id  INT          NOT NULL,
+    lang_id  INT          NOT NULL,
     is_new   BOOLEAN      NOT NULL
 );
 -- определение таблицы, как дочерней
@@ -289,7 +311,14 @@ ALTER TABLE public.new_users
 Ответ в консоли
 
 ```postgresql
--- TODO
+-- ADD CONSTRAINT new_users_email_key TO new_users TABLE FROM users TABLE
+ALTER TABLE new_users ADD CONSTRAINT new_users_email_key UNIQUE (email);
+-- ADD CONSTRAINT new_users_pkey TO new_users TABLE FROM users TABLE
+ALTER TABLE new_users ADD CONSTRAINT new_users_pkey PRIMARY KEY (id);
+-- ADD TRIGGER check_email TO new_users TABLE FROM users TABLE
+CREATE CONSTRAINT TRIGGER check_email AFTER INSERT OR UPDATE ON public.new_users NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE FUNCTION trigger_check_email();
+-- ADD TRIGGER lower_username TO new_users TABLE FROM users TABLE
+CREATE TRIGGER lower_username BEFORE INSERT OR UPDATE ON public.new_users FOR EACH ROW EXECUTE FUNCTION trigger_lower_username();
 ```
 
 ## Снятие наследования Дочерней таблицы
