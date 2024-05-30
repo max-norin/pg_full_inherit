@@ -126,14 +126,14 @@ BEGIN
         IF "command".command_tag = 'CREATE TABLE' THEN
             "child" = "command".objid;
             OPEN "constraints" FOR
-                SELECT * FROM get_inherit_constraints() "c"
+                SELECT * FROM @extschema@.get_inherit_constraints() "c"
                 WHERE "c"."childrelid" = "child" AND "c"."is_inherited" = FALSE
                 LIMIT 1;
         ELSEIF "command".command_tag = 'ALTER TABLE' THEN
             "parent" = "command".objid;
             "child" = "command".objid;
             OPEN "constraints" FOR
-                SELECT * FROM get_inherit_constraints() "c"
+                SELECT * FROM @extschema@.get_inherit_constraints() "c"
                 WHERE ("c"."parentrelid" = "parent" OR "c"."childrelid" = "child")
                   AND "c"."is_inherited" = FALSE
                 LIMIT 1;
@@ -182,17 +182,17 @@ BEGIN
         IF "command".command_tag = 'CREATE TABLE' THEN
             "child" = "command".objid;
             OPEN "triggers" FOR
-                SELECT * FROM get_inherit_triggers() "t"
+                SELECT * FROM @extschema@.get_inherit_triggers() "t"
                 WHERE "t"."childrelid" = "child" AND "t"."is_inherited" = FALSE;
         ELSEIF "command".command_tag = 'ALTER TABLE' THEN
             "child" = "command".objid;
             OPEN "triggers" FOR
-                SELECT * FROM get_inherit_triggers() "t"
+                SELECT * FROM @extschema@.get_inherit_triggers() "t"
                 WHERE "t"."childrelid" = "child" AND "t"."is_inherited" = FALSE;
         ELSEIF "command".command_tag = 'CREATE TRIGGER' THEN
             "triggerid" = "command".objid;
             OPEN "triggers" FOR
-                SELECT * FROM get_inherit_triggers() "t"
+                SELECT * FROM @extschema@.get_inherit_triggers() "t"
                 WHERE "t"."parentid" = "triggerid" AND "t"."is_inherited" = FALSE;
         ELSE
             CONTINUE;
