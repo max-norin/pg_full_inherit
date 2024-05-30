@@ -23,14 +23,14 @@
 
 Создайте новую схему для удобства.
 
-```postgresql
+```sql
 CREATE SCHEMA "abstract";
 ALTER ROLE "postgres" SET search_path TO "public", "abstract";
 ```
 
 Установите расширение.
 
-```postgresql
+```sql
 CREATE EXTENSION "pg_full_inherit"
     SCHEMA "abstract"
     VERSION '1.0';
@@ -50,7 +50,7 @@ CREATE EXTENSION "pg_full_inherit"
 
 Расширение работает со следующими командами и их вариациями.
 
-```postgresql
+```sql
 -- создание дочерней таблицы
 CREATE TABLE public.full_users
 (
@@ -86,7 +86,7 @@ DROP TRIGGER IF EXISTS "check_username" ON public.users;
 
 Пример вывода в консоли.
 
-```postgresql
+```sql
 -- ADD CONSTRAINT full_users_city_id_fkey TO full_users TABLE FROM users TABLE
 ALTER TABLE full_users ADD CONSTRAINT full_users_city_id_fkey FOREIGN KEY (city_id) REFERENCES cities(id);
 -- ADD CONSTRAINT full_users_pkey TO full_users TABLE FROM users TABLE
@@ -139,7 +139,7 @@ CREATE TRIGGER lower_username BEFORE INSERT OR UPDATE ON public.full_users FOR E
 Вы можете включать и отключать создание и удаление ограничений и триггеров
 с помощью команд.
 
-```postgresql
+```sql
 -- отключение событийного триггера
 ALTER EVENT TRIGGER имя_событийного_триггера DISABLE;
 -- включение событийного триггера
@@ -171,7 +171,7 @@ ALTER EVENT TRIGGER имя_событийного_триггера ENABLE;
 
 ## Создание Родительской таблицы
 
-```postgresql
+```sql
 -- таблица пользователей с PRIMARY KEY, UNIQUE, FOREIGN KEY, CONSTRAINT TRIGGER, TRIGGER
 CREATE TABLE public.users
 (
@@ -197,7 +197,7 @@ EXECUTE FUNCTION public.trigger_lower_username();
 
 ## Создание Дочерней таблицы
 
-```postgresql
+```sql
 -- дочерняя таблица пользователей
 CREATE TABLE public.full_users
 (
@@ -208,7 +208,7 @@ CREATE TABLE public.full_users
 
 Ответ в консоли
 
-```postgresql
+```sql
 -- ADD CONSTRAINT full_users_city_id_fkey TO full_users TABLE FROM users TABLE
 ALTER TABLE full_users ADD CONSTRAINT full_users_city_id_fkey FOREIGN KEY (city_id) REFERENCES cities(id);
 -- ADD CONSTRAINT full_users_pkey TO full_users TABLE FROM users TABLE
@@ -223,7 +223,7 @@ CREATE TRIGGER lower_username BEFORE INSERT OR UPDATE ON public.full_users FOR E
 
 ## Изменения Родительской таблицы
 
-```postgresql
+```sql
 -- добавить в таблицу пользователей новые UNIQUE, FOREIGN KEY
 ALTER TABLE public.users
     ADD CONSTRAINT users_username_ukey UNIQUE (username),
@@ -245,7 +245,7 @@ EXECUTE FUNCTION public.trigger_auto_bio();
 
 Ответ в консоли
 
-```postgresql
+```sql
 -- ADD CONSTRAINT full_users_username_ukey TO full_users TABLE FROM users TABLE
 ALTER TABLE full_users ADD CONSTRAINT full_users_username_ukey UNIQUE (username);
 -- ADD CONSTRAINT full_users_lang_id_fkey TO full_users TABLE FROM users TABLE
@@ -260,7 +260,7 @@ CREATE TRIGGER auto_bio BEFORE INSERT OR UPDATE ON public.full_users FOR EACH RO
 
 ## Изменения Родительской таблицы
 
-```postgresql
+```sql
 -- удаление из таблицы пользователей UNIQUE (username)
 ALTER TABLE public.users
   DROP CONSTRAINT users_username_ukey;
@@ -277,7 +277,7 @@ DROP TRIGGER IF EXISTS "auto_bio" ON public.users;
 
 Ответ в консоли
 
-```postgresql
+```sql
 -- DROP CONSTRAINT full_users_username_ukey FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
 ALTER TABLE full_users DROP CONSTRAINT IF EXISTS full_users_username_ukey;
 
@@ -296,7 +296,7 @@ DROP TRIGGER IF EXISTS auto_bio ON full_users;
 
 ## Создание таблицы и определение её как Дочерней таблицы
 
-```postgresql
+```sql
 -- таблица аналогичная таблице пользователей, но без ограничений и триггеров
 CREATE TABLE public.new_users
 (
@@ -314,7 +314,7 @@ ALTER TABLE public.new_users
 
 Ответ в консоли
 
-```postgresql
+```sql
 -- ADD CONSTRAINT new_users_email_key TO new_users TABLE FROM users TABLE
 ALTER TABLE new_users ADD CONSTRAINT new_users_email_key UNIQUE (email);
 -- ADD CONSTRAINT new_users_pkey TO new_users TABLE FROM users TABLE
@@ -327,7 +327,7 @@ CREATE TRIGGER lower_username BEFORE INSERT OR UPDATE ON public.new_users FOR EA
 
 ## Снятие наследования Дочерней таблицы
 
-```postgresql
+```sql
 ALTER TABLE public.new_users
     NO INHERIT public.users;
 ```
@@ -336,6 +336,6 @@ ALTER TABLE public.new_users
 
 # Удаление расширения
 
-```postgresql
+```sql
 DROP EXTENSION "pg_full_inherit";
 ```
