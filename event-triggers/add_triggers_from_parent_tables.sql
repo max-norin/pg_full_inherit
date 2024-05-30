@@ -59,7 +59,7 @@ BEGIN
             -- завершить цикл если trigger пустой
             EXIT WHEN "trigger" IS NULL;
             -- имя для триггера к дочерней таблицы
-            "name" = "trigger"."parentname";
+            "name" = public.get_child_trigger_name("trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
             -- запрос на добавление триггера в таблицу childid
             "query" = replace ("trigger"."def", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT) || ';';
             RAISE NOTICE USING MESSAGE = format('-- ADD TRIGGER %1I TO %2I TABLE FROM %3I TABLE', "name", "trigger"."childrelid"::REGCLASS, "trigger"."parentrelid"::REGCLASS);

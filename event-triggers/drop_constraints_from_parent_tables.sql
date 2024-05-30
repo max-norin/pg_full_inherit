@@ -35,7 +35,7 @@ BEGIN
             SELECT inhrelid FROM pg_inherits WHERE inhparent = "parent"
             LOOP
                 -- имя ограничения в дочерней таблице
-                "name" = public.constraint_child_from_parent("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
+                "name" = public.get_child_constraint_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
                 -- удаление ограничения name из дочерней таблицы
                 "query" = format('ALTER TABLE %1s DROP CONSTRAINT IF EXISTS %2s;', "child"::REGCLASS, "name");
                 RAISE NOTICE USING MESSAGE = format('-- DROP CONSTRAINT %1s FROM %2s TABLE BASED ON DEPENDENCY ON %3s TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);

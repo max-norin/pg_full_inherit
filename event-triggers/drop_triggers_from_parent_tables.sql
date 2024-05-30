@@ -34,6 +34,8 @@ BEGIN
             -- https://www.postgresql.org/docs/current/catalog-pg-inherits.html
             SELECT inhrelid FROM pg_inherits WHERE inhparent = "parent"
             LOOP
+                -- имя триггера в дочерней таблице
+                "name" = public.get_child_trigger_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
                 -- удаление ограничения name из дочерней таблицы
                 "query" = format('DROP TRIGGER IF EXISTS %1s ON %2s;', "name", "child"::REGCLASS);
                 RAISE NOTICE USING MESSAGE = format('-- DROP TRIGGER %1s FROM %2s TABLE BASED ON DEPENDENCY ON %3s TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
