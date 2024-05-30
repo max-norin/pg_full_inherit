@@ -1,5 +1,5 @@
 -- триггер события для добавление триггеров от родительских таблиц
-CREATE FUNCTION public.event_trigger_add_triggers_from_parent_tables ()
+CREATE FUNCTION public.event_trigger_add_inherit_triggers ()
     RETURNS EVENT_TRIGGER
     AS $$
 DECLARE

@@ -1,5 +1,5 @@
 -- триггер события для добавление ограничений от родительских таблиц
-CREATE FUNCTION public.event_trigger_add_constraints_from_parent_tables ()
+CREATE FUNCTION public.event_trigger_add_inherit_constraints ()
     RETURNS EVENT_TRIGGER
     AS $$
 DECLARE

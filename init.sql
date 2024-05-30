@@ -1,16 +1,16 @@
-CREATE EVENT TRIGGER "add_constraints_from_parent_tables" ON ddl_command_end
+CREATE EVENT TRIGGER "add_inherit_constraints" ON ddl_command_end
     WHEN TAG IN ('CREATE TABLE', 'ALTER TABLE')
-EXECUTE PROCEDURE public.event_trigger_add_constraints_from_parent_tables ();
+EXECUTE PROCEDURE public.event_trigger_add_inherit_constraints ();
 
-CREATE EVENT TRIGGER "drop_constraints_from_parent_tables" ON sql_drop
+CREATE EVENT TRIGGER "drop_inherit_constraints" ON sql_drop
     WHEN TAG IN ('ALTER TABLE')
-EXECUTE PROCEDURE public.event_trigger_drop_constraints_from_parent_tables ();
+EXECUTE PROCEDURE public.event_trigger_drop_inherit_constraints ();
 
 
-CREATE EVENT TRIGGER "add_triggers_from_parent_tables" ON ddl_command_end
+CREATE EVENT TRIGGER "add_inherit_triggers" ON ddl_command_end
     WHEN TAG IN ('CREATE TABLE', 'ALTER TABLE', 'CREATE TRIGGER')
-EXECUTE PROCEDURE public.event_trigger_add_triggers_from_parent_tables ();
+EXECUTE PROCEDURE public.event_trigger_add_inherit_triggers ();
 
-CREATE EVENT TRIGGER "drop_triggers_from_parent_tables" ON sql_drop
+CREATE EVENT TRIGGER "drop_inherit_triggers" ON sql_drop
     WHEN TAG IN ('DROP TRIGGER')
-EXECUTE PROCEDURE public.event_trigger_drop_triggers_from_parent_tables ();
+EXECUTE PROCEDURE public.event_trigger_drop_inherit_triggers ();

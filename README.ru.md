@@ -141,10 +141,10 @@ EXECUTE FUNCTION trigger_check_email();
 
 Всего есть 4 триггера:
 
-- `add_constraints_from_parent_tables` - событийный триггер добавления ограничений
-- `drop_constraints_from_parent_tables` - событийный триггер удаления ограничений
-- `add_triggers_from_parent_tables` - событийный триггер добавления триггеров
-- `drop_triggers_from_parent_tables` - событийный триггер удаления триггеров
+- `add_inherit_constraints` - событийный триггер добавления ограничений
+- `drop_inherit_constraints` - событийный триггер удаления ограничений
+- `add_inherit_triggers` - событийный триггер добавления триггеров
+- `drop_inherit_triggers` - событийный триггер удаления триггеров
 
 # Принцип работы
 
