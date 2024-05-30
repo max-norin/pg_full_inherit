@@ -1,5 +1,4 @@
 -- триггер события для добавление ограничений от родительских таблиц
--- в основом используется для создания REFERENCES
 CREATE FUNCTION public.event_trigger_add_constraints_from_parent_tables ()
     RETURNS EVENT_TRIGGER
     AS $$
@@ -28,7 +27,7 @@ BEGIN
             "child" = "command".objid;
             -- добавление ограничений в курсор constraints
             -- LIMIT 1 - потому что запрос ALTER TABLE в цикле ниже
-            -- запускает опять этот же триггер и снова выполняется эта команда
+            -- запускает опять этот же триггер и
             -- происходит рекурсия, которую нельзя контролировать,
             -- так как нет указателя на текущую глубину рекурсии
             OPEN "constraints" FOR
@@ -38,14 +37,14 @@ BEGIN
         -- если редактируется таблица
         ELSEIF "command".command_tag = 'ALTER TABLE' THEN
             -- получение текущей родительской таблицы
-            -- при добавлении ограничения
+            -- для обработки, когда добавляется новое ограничения
             "parent" = "command".objid;
             -- получение текущей дочерней таблицы
-            -- при изменении наследования
+            -- для обработки, когда изменяется наследование таблицы
             "child" = "command".objid;
             -- добавление ограничений в курсор constraints
             -- LIMIT 1 - потому что запрос ALTER TABLE в цикле ниже
-            -- запускает опять этот же триггер и снова выполняется эта команда
+            -- запускает опять этот же триггер и
             -- происходит рекурсия, которую нельзя контролировать,
             -- так как нет указателя на текущую глубину рекурсии
             OPEN "constraints" FOR
@@ -59,15 +58,19 @@ BEGIN
             CONTINUE;
         END IF;
 
+        -- цикл по новым ограничениям
         LOOP
             FETCH NEXT FROM "constraints" INTO "constraint";
             -- завершить цикл если constraint пустой
             EXIT WHEN "constraint" IS NULL;
-            -- имя для ограничения к дочерней таблицы
+            -- имя для ограничения дочерней таблицы
             "name" = public.get_child_constraint_name("constraint"."parentname", "constraint"."parentrelid"::REGCLASS::TEXT, "constraint"."childrelid"::REGCLASS::TEXT);
-            -- запрос на добавление ограничения name в таблицу childid
+            -- запрос на добавление ограничения name в таблицу childrelid
             "query" = format('ALTER TABLE %1I ADD CONSTRAINT %2I %3s;', "constraint"."childrelid"::REGCLASS, "name", "constraint"."def");
             RAISE NOTICE USING MESSAGE = format('-- ADD CONSTRAINT %1I TO %2I TABLE FROM %3I TABLE', "name", "constraint"."childrelid"::REGCLASS, "constraint"."parentrelid"::REGCLASS);
+            -- запрос query запустить рекурсию этого метода,
+            -- так как содержит команду ALTER TABLE,
+            -- которая обрабатывается этой же функцией
             RAISE NOTICE USING MESSAGE = "query";
             EXECUTE "query";
         END LOOP;

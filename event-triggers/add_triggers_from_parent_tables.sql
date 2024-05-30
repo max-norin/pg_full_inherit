@@ -1,5 +1,4 @@
 -- триггер события для добавление триггеров от родительских таблиц
--- в основом используется для создания REFERENCES
 CREATE FUNCTION public.event_trigger_add_triggers_from_parent_tables ()
     RETURNS EVENT_TRIGGER
     AS $$
@@ -33,7 +32,7 @@ BEGIN
         -- если редактируется таблица
         ELSEIF "command".command_tag = 'ALTER TABLE' THEN
             -- получение текущей дочерней таблицы
-            -- при изменении наследования
+            -- для обработки, когда изменяется наследование таблицы
             "child" = "command".objid;
             -- добавление ограничений в курсор triggers
             OPEN "triggers" FOR
@@ -53,14 +52,13 @@ BEGIN
             CONTINUE;
         END IF;
 
-
         LOOP
             FETCH NEXT FROM "triggers" INTO "trigger";
             -- завершить цикл если trigger пустой
             EXIT WHEN "trigger" IS NULL;
-            -- имя для триггера к дочерней таблицы
+            -- имя для триггера дочерней таблицы
             "name" = public.get_child_trigger_name("trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
-            -- запрос на добавление триггера в таблицу childid
+            -- запрос на добавление триггера в таблицу childrelid
             "query" = replace ("trigger"."def", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT) || ';';
             RAISE NOTICE USING MESSAGE = format('-- ADD TRIGGER %1I TO %2I TABLE FROM %3I TABLE', "name", "trigger"."childrelid"::REGCLASS, "trigger"."parentrelid"::REGCLASS);
             RAISE NOTICE USING MESSAGE = format("query");
