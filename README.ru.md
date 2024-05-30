@@ -300,3 +300,9 @@ ALTER TABLE public.new_users
 ```
 
 Таблица перестанет быть наследованной, но никаких действий не произойдет.
+
+# Удаление расширения
+
+```postgresql
+DROP EXTENSION "pg_full_inherit";
+```
