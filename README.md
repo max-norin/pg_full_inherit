@@ -7,7 +7,7 @@ If you have any information that works on earlier versions, please let me know.
 > The extension allows child tables to inherit 
 > PRIMARY KEY, UNIQUE, FOREIGN KEY, CONSTRAINT TRIGGER constraints and triggers.
 
-Important note: when deleting inheritance by the command 
+Note: when deleting inheritance by the command 
 `ALTER TABLE public.new_users NO INHERIT public.users;`,
 no actions will occur. The table will have 
 the same columns, constraints, and triggers as in inheritance.
@@ -18,10 +18,11 @@ the same columns, constraints, and triggers as in inheritance.
 
 ## Classic
 
-Download the extension files from [dist](./dist) to the PostgreSQL folder
-and run the following commands. 
+Download the files from [dist](./dist) and move them to the `extension`
+folder of the PostgreSQL application.
 For windows, the folder can be located in 
 `C:\Program Files\PostgreSQL\16\share\extension`.
+Next, run the following commands.
 
 Create a new schema for convenience.
 
@@ -38,12 +39,12 @@ CREATE EXTENSION "pg_full_inherit"
     VERSION '1.0';
 ```
 
-[Learn more about the control extension and file](https://postgrespro.ru/docs/postgresql/current/extend-extensions)
+[Learn more about an extension and control file](https://postgrespro.ru/docs/postgresql/current/extend-extensions)
 
 ## Workaround
 
 If you can't add an extension to PostgreSQL, then there is another option. 
-Copy the contents of files with the `.sql` [dist](./dist) extension to a text editor. 
+Copy the contents of files with the `.sql` extension from [dist](./dist) to a text editor. 
 Replace the expression `@extschema@` with a schema 
 to which the necessary functions will be added, for example `abstract`. 
 Copy it to the PostgreSQL console and run it.

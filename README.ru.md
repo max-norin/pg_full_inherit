@@ -8,7 +8,7 @@
 > Расширение позволяет унаследовать дочерним таблицам ограничения
 > PRIMARY KEY, UNIQUE, FOREIGN KEY, CONSTRAINT TRIGGER и триггеры.
 
-Важное замечание: при удалении наследования командой
+Примечание: при удалении наследования командой
 `ALTER TABLE public.new_users NO INHERIT public.users;`
 никаких действий не произойдёт. Таблица будет иметь
 те же столбцы, ограничения и триггеры, как при наследовании.
@@ -17,9 +17,10 @@
 
 ## Классическая
 
-Скачайте в папку `extension` PostgreSQL файлы из [dist](./dist)
-и выполните следующие команды. Для windows папка может располагаться в
+Скачайте файлы из [dist](./dist) и переместите их в папку `extension`
+приложения PostgreSQL. Для windows папка может располагаться в
 `C:\Program Files\PostgreSQL\16\share\extension`.
+Далее выполните следующие команды. 
 
 Создайте новую схему для удобства.
 
@@ -63,7 +64,7 @@ ALTER TABLE public.users
     ADD CONSTRAINT users_username_ukey UNIQUE (username),
     ADD COLUMN lang_id INT,
     ADD CONSTRAINT users_lang_id_fkey FOREIGN KEY (lang_id) REFERENCES langs (id);
--- удаление ограничений
+-- удаление ограничений у родительской таблицы
 ALTER TABLE public.users
     DROP CONSTRAINT users_username_ukey;
 ALTER TABLE public.users
