@@ -23,6 +23,22 @@ LANGUAGE plpgsql
 IMMUTABLE
 RETURNS NULL ON NULL INPUT;
 /*
+=================== DEF ===================
+*/
+CREATE FUNCTION @extschema@..get_child_triggerdef ("parentdef" TEXT, "parentname" TEXT, "parent" TEXT, "child" TEXT)
+    RETURNS TEXT
+AS $$
+BEGIN
+    RETURN replace (
+            replace ("parentdef", "parent", "child"),
+            'CREATE TRIGGER ' || "parentname",
+            'CREATE TRIGGER ' || @extschema@.get_child_trigger_name("parentname", "parent", "child"));
+END
+$$
+LANGUAGE plpgsql
+IMMUTABLE
+RETURNS NULL ON NULL INPUT;
+/*
 =================== GET_INHERIT_CONSTRAINTS ===================
 */
 CREATE FUNCTION @extschema@.get_inherit_constraints ()
