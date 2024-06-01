@@ -25,7 +25,7 @@ RETURNS NULL ON NULL INPUT;
 /*
 =================== DEF ===================
 */
-CREATE FUNCTION @extschema@..get_child_triggerdef ("parentdef" TEXT, "parentname" TEXT, "parent" TEXT, "child" TEXT)
+CREATE FUNCTION @extschema@.get_child_triggerdef ("parentdef" TEXT, "parentname" TEXT, "parent" TEXT, "child" TEXT)
     RETURNS TEXT
 AS $$
 BEGIN
