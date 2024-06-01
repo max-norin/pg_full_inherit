@@ -35,8 +35,8 @@ BEGIN
                 -- имя ограничения дочерней таблице
                 "name" = public.get_child_constraint_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
                 -- удаление ограничения name из дочерней таблицы
-                "query" = format('ALTER TABLE %1s DROP CONSTRAINT IF EXISTS %2s;', "child"::REGCLASS, "name");
-                RAISE NOTICE USING MESSAGE = format('-- DROP CONSTRAINT %1s FROM %2s TABLE BASED ON DEPENDENCY ON %3s TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
+                "query" = format('ALTER TABLE %1I DROP CONSTRAINT IF EXISTS %2I;', "child"::REGCLASS, "name");
+                RAISE NOTICE USING MESSAGE = format('-- DROP CONSTRAINT %1I FROM %2I TABLE BASED ON DEPENDENCY ON %3I TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
                 RAISE NOTICE USING MESSAGE = format("query");
                 EXECUTE "query";
             END LOOP;

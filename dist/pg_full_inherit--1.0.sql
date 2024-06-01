@@ -261,8 +261,8 @@ BEGIN
             SELECT inhrelid FROM pg_inherits WHERE inhparent = "parent"
             LOOP
                 "name" = @extschema@.get_child_constraint_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
-                "query" = format('ALTER TABLE %1s DROP CONSTRAINT IF EXISTS %2s;', "child"::REGCLASS, "name");
-                RAISE NOTICE USING MESSAGE = format('-- DROP CONSTRAINT %1s FROM %2s TABLE BASED ON DEPENDENCY ON %3s TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
+                "query" = format('ALTER TABLE %1I DROP CONSTRAINT IF EXISTS %2I;', "child"::REGCLASS, "name");
+                RAISE NOTICE USING MESSAGE = format('-- DROP CONSTRAINT %1I FROM %2I TABLE BASED ON DEPENDENCY ON %3I TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
                 RAISE NOTICE USING MESSAGE = format("query");
                 EXECUTE "query";
             END LOOP;
@@ -299,8 +299,8 @@ BEGIN
             SELECT inhrelid FROM pg_inherits WHERE inhparent = "parent"
             LOOP
                 "name" = @extschema@.get_child_trigger_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
-                "query" = format('DROP TRIGGER IF EXISTS %1s ON %2s;', "name", "child"::REGCLASS);
-                RAISE NOTICE USING MESSAGE = format('-- DROP TRIGGER %1s FROM %2s TABLE BASED ON DEPENDENCY ON %3s TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
+                "query" = format('DROP TRIGGER IF EXISTS %1I ON %2I;', "name", "child"::REGCLASS);
+                RAISE NOTICE USING MESSAGE = format('-- DROP TRIGGER %1I FROM %2I TABLE BASED ON DEPENDENCY ON %3I TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
                 RAISE NOTICE USING MESSAGE = format("query");
                 EXECUTE "query";
             END LOOP;
