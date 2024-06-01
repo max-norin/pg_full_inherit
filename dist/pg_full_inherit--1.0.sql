@@ -114,7 +114,7 @@ BEGIN
         FROM "pg_inherits" "i"
                  LEFT JOIN "triggers" "pc" ON "i"."inhparent" = "pc"."tgrelid"
                  LEFT JOIN "triggers" "cc" ON "i"."inhrelid" = "cc"."tgrelid"
-                    AND "pc"."tgdef" = replace ("cc"."tgdef", "i"."inhrelid"::REGCLASS::TEXT, "i"."inhparent"::REGCLASS::TEXT)
+                    AND @extschema@.get_child_triggerdef("pc"."tgdef", "pc"."tgname":: TEXT, "i"."inhparent"::REGCLASS::TEXT, "i"."inhrelid"::REGCLASS::TEXT) = "cc"."tgdef"
         WHERE "pc"."oid" IS NOT NULL OR "cc"."oid" IS NOT NULL;
 END
 $$
@@ -223,7 +223,7 @@ BEGIN
             EXIT WHEN "trigger" IS NULL;
 
             "name" = @extschema@.get_child_trigger_name("trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
-            "query" = replace ("trigger"."parentdef", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT) || ';';
+            "query" = @extschema@.get_child_triggerdef("trigger"."parentdef", "trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
             RAISE NOTICE USING MESSAGE = format('-- ADD TRIGGER %1I TO %2I TABLE FROM %3I TABLE', "name", "trigger"."childrelid"::REGCLASS, "trigger"."parentrelid"::REGCLASS);
             RAISE NOTICE USING MESSAGE = format("query");
             EXECUTE "query";
