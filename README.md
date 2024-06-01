@@ -13,6 +13,14 @@ no additional actions will occur. The table will have
 the same columns, constraints, and triggers as in inheritance.
 Including automatically inherited `CHECK` and `NOT NULL` constraints.
 
+# About inheritance in PostgreSQL
+
+In PostgreSQL versions 16 and earlier, only columns and `CHECK` `NOT NULL` constraints 
+are inherited when a table is inherited. All other constraints and triggers are not inherited.
+
+If you delete inheritance from the table, then the columns, `CHECK` `NOT NULL` constraints, data 
+in the child tables remain unchanged.
+
 [README in Russian](./README.ru.md)
 
 # Table of Contents
