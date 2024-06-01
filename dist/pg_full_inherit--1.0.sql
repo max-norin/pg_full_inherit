@@ -31,8 +31,8 @@ AS $$
 BEGIN
     RETURN regexp_replace (
             replace ("parentdef", "parent", "child"),
-            '(CREATE (CONSTRAINT )?TRIGGER) ' || "parentname",
-            '\1 ' || @extschema@.get_child_trigger_name("parentname", "parent", "child"));
+            '(CREATE (CONSTRAINT )?TRIGGER) ' || quote_ident ("parentname"),
+            '\1 ' || quote_ident (@extschema@.get_child_trigger_name("parentname", "parent", "child")));
 END
 $$
 LANGUAGE plpgsql
