@@ -32,7 +32,7 @@ BEGIN
     RETURN regexp_replace (
             replace ("parentdef", "parent", "child"),
             '(CREATE (CONSTRAINT )?TRIGGER) ' || "parentname",
-            '\1 ' || abstract.get_child_trigger_name("parentname", "parent", "child"));
+            '\1 ' || @extschema@.get_child_trigger_name("parentname", "parent", "child"));
 END
 $$
 LANGUAGE plpgsql
