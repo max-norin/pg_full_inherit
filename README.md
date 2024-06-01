@@ -24,7 +24,7 @@ For windows, the folder can be located in
 `C:\Program Files\PostgreSQL\16\share\extension`.
 Next, run the following commands.
 
-Create a new schema for convenience.
+Create the new schema for convenience.
 
 ```sql
 CREATE SCHEMA "abstract";
@@ -43,7 +43,7 @@ CREATE EXTENSION "pg_full_inherit"
 
 ## Workaround
 
-If you can't add an extension to PostgreSQL, then there is another option. 
+If you can't add the extension to PostgreSQL, then there is another option. 
 Copy the contents of files with the `.sql` extension from [dist](./dist) to a text editor. 
 Replace the expression `@extschema@` with a schema 
 to which the necessary functions will be added, for example `abstract`. 
@@ -85,7 +85,7 @@ DROP TRIGGER IF EXISTS "check_username" ON public.users;
 
 After the command is triggered, the console will describe what was done
 with the child tables. For each added constraint and trigger, 
-there will be a comment on what is happening and why, as well as the command that triggered it.
+there will be the comment on what is happening and why, as well as the command that triggered it.
 
 Example of output in the console.
 
@@ -109,7 +109,7 @@ CREATE TRIGGER lower_username BEFORE INSERT OR UPDATE ON public.full_users FOR E
 The names of constraints in the parent and child tables cannot be the same 
 (DBMS features). Therefore, to control the
 automatic naming of constraints in the extension, there is 
-a function get_child_constraint_name.
+the function get_child_constraint_name.
 
 If you are satisfied with the way PostgreSQL names constraints, 
 then leave it as it is. If you want child table
@@ -119,7 +119,7 @@ constraints to have special names, then redefine the function as you see fit.
 
 The trigger names of the parent and child tables can be the same 
 (DBMS features). However, you can control the automatic
-naming of triggers in the extension, there is a function `get_child_trigger_name`.
+naming of triggers in the extension, there is the function `get_child_trigger_name`.
 
 If you are satisfied with the same trigger names, then leave it as it is. 
 If you want the child table triggers to have
@@ -145,22 +145,22 @@ and triggers using the commands.
 
 ```sql
 -- disabling the event trigger
-ALTER EVENT TRIGGER имя_событийного_триггера DISABLE;
+ALTER EVENT TRIGGER event_trigger_name DISABLE;
 -- enabling the event trigger
-ALTER EVENT TRIGGER имя_событийного_триггера ENABLE;
+ALTER EVENT TRIGGER event_trigger_name ENABLE;
 ```
 
 There are 4 triggers in total:
 
 - `add_inherit_constraints` - event trigger for adding constraints
-- `drop_inherit_constraints` - event trigger for removing constraints
+- `drop_inherit_constraints` - event trigger for deleting constraints
 - `add_inherit_triggers` - event trigger for adding triggers
 - `drop_inherit_triggers` - event trigger for deleting triggers
 
 # Operating principle
 
 The principle of operation is based on event triggers 
-and system directories where information about tables is stored.
+and system catalogs where information about tables is stored.
 
 The extension has two functions `get_inherit_constraints` and `get_inherit_triggersthat` 
 return tables with data about constraints and triggers for parent and child tables.
