@@ -248,16 +248,16 @@ EXECUTE FUNCTION public.trigger_auto_bio();
 Response in the console
 
 ```sql
--- ADD CONSTRAINT full_users_username_ukey TO full_users TABLE FROM users TABLE
-ALTER TABLE full_users ADD CONSTRAINT full_users_username_ukey UNIQUE (username);
--- ADD CONSTRAINT full_users_lang_id_fkey TO full_users TABLE FROM users TABLE
-ALTER TABLE full_users ADD CONSTRAINT full_users_lang_id_fkey FOREIGN KEY (lang_id) REFERENCES langs(id);
+-- ADD CONSTRAINT "full_users--username: ukey" TO full_users TABLE FROM users TABLE
+ALTER TABLE full_users ADD CONSTRAINT "full_users--username: ukey" UNIQUE (username);
+-- ADD CONSTRAINT "full_users: lang_id fkey" TO full_users TABLE FROM users TABLE
+ALTER TABLE full_users ADD CONSTRAINT "full_users: lang_id fkey" FOREIGN KEY (lang_id) REFERENCES langs(id);
 
--- ADD TRIGGER check_username TO full_users TABLE FROM users TABLE
-CREATE CONSTRAINT TRIGGER check_username AFTER INSERT OR UPDATE ON public.full_users NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE FUNCTION trigger_check_username();
+-- ADD TRIGGER "check username" TO full_users TABLE FROM users TABLE
+CREATE CONSTRAINT TRIGGER "check username" AFTER INSERT OR UPDATE ON public.full_users NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE FUNCTION trigger_check_username()
 
--- ADD TRIGGER auto_bio TO full_users TABLE FROM users TABLE
-CREATE TRIGGER auto_bio BEFORE INSERT OR UPDATE ON public.full_users FOR EACH ROW EXECUTE FUNCTION trigger_auto_bio();
+-- ADD TRIGGER "auto bio" TO full_users TABLE FROM users TABLE
+CREATE TRIGGER "auto bio" BEFORE INSERT OR UPDATE ON public.full_users FOR EACH ROW EXECUTE FUNCTION trigger_auto_bio()
 ```
 
 ## Changes to the Parent Table
