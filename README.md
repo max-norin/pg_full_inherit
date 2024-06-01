@@ -32,7 +32,7 @@ Including automatically inherited `CHECK` and `NOT NULL` constraints.
    1. [Creating a Child Table](#Creating-a-Child-Table)
    1. [Changes to the Parent Table](#Changes-to-the-Parent-Table)
    1. [Changes to the Parent Table](#changes-to-the-Parent-Table-1)
-   1. [Creating a table and defining it as a Child table](#Creatinga-table-and-defining-it-as-a-Child-table)
+   1. [Creating a table and defining it as a Child table](#Creating-a-table-and-defining-it-as-a-Child-table)
    1. [Removing Child Table Inheritance](#Removing-Child-Table-Inheritance)
 1. [Deleting an extension](#Deleting-an-extension)
 
