@@ -29,10 +29,10 @@ CREATE FUNCTION @extschema@.get_child_trigger_def ("parentdef" TEXT, "parentname
     RETURNS TEXT
 AS $$
 BEGIN
-    RETURN replace (
+    RETURN regexp_replace (
             replace ("parentdef", "parent", "child"),
-            'CREATE TRIGGER ' || "parentname",
-            'CREATE TRIGGER ' || @extschema@.get_child_trigger_name("parentname", "parent", "child"));
+            '(CREATE (CONSTRAINT )?TRIGGER) ' || "parentname",
+            '\1 ' || abstract.get_child_trigger_name("parentname", "parent", "child"));
 END
 $$
 LANGUAGE plpgsql
