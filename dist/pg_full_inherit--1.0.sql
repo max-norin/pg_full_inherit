@@ -25,7 +25,7 @@ RETURNS NULL ON NULL INPUT;
 /*
 =================== DEF ===================
 */
-CREATE FUNCTION @extschema@.get_child_triggerdef ("parentdef" TEXT, "parentname" TEXT, "parent" TEXT, "child" TEXT)
+CREATE FUNCTION @extschema@.get_child_trigger_def ("parentdef" TEXT, "parentname" TEXT, "parent" TEXT, "child" TEXT)
     RETURNS TEXT
 AS $$
 BEGIN
@@ -114,7 +114,7 @@ BEGIN
         FROM "pg_inherits" "i"
                  LEFT JOIN "triggers" "pc" ON "i"."inhparent" = "pc"."tgrelid"
                  LEFT JOIN "triggers" "cc" ON "i"."inhrelid" = "cc"."tgrelid"
-                    AND @extschema@.get_child_triggerdef("pc"."tgdef", "pc"."tgname":: TEXT, "i"."inhparent"::REGCLASS::TEXT, "i"."inhrelid"::REGCLASS::TEXT) = "cc"."tgdef"
+                    AND @extschema@.get_child_trigger_def("pc"."tgdef", "pc"."tgname":: TEXT, "i"."inhparent"::REGCLASS::TEXT, "i"."inhrelid"::REGCLASS::TEXT) = "cc"."tgdef"
         WHERE "pc"."oid" IS NOT NULL OR "cc"."oid" IS NOT NULL;
 END
 $$
@@ -223,7 +223,7 @@ BEGIN
             EXIT WHEN "trigger" IS NULL;
 
             "name" = @extschema@.get_child_trigger_name("trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
-            "query" = @extschema@.get_child_triggerdef("trigger"."parentdef", "trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
+            "query" = @extschema@.get_child_trigger_def("trigger"."parentdef", "trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
             RAISE NOTICE USING MESSAGE = format('-- ADD TRIGGER %1I TO %2I TABLE FROM %3I TABLE', "name", "trigger"."childrelid"::REGCLASS, "trigger"."parentrelid"::REGCLASS);
             RAISE NOTICE USING MESSAGE = format("query");
             EXECUTE "query";

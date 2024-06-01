@@ -1,4 +1,4 @@
-CREATE FUNCTION public.get_child_triggerdef ("parentdef" TEXT, "parentname" TEXT, "parent" TEXT, "child" TEXT)
+CREATE FUNCTION public.get_child_trigger_def ("parentdef" TEXT, "parentname" TEXT, "parent" TEXT, "child" TEXT)
     RETURNS TEXT
 AS $$
 BEGIN
