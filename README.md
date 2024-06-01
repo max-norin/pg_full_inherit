@@ -9,8 +9,9 @@ If you have any information that works on earlier versions, please let me know.
 
 Note: when deleting inheritance by the command 
 `ALTER TABLE public.new_users NO INHERIT public.users;`,
-no actions will occur. The table will have 
+no additional actions will occur. The table will have 
 the same columns, constraints, and triggers as in inheritance.
+Including automatically inherited `CHECK` and `NOT NULL` constraints.
 
 [README in Russian](./README.ru.md)
 
