@@ -61,7 +61,7 @@ BEGIN
             -- запрос на добавление триггера в таблицу childrelid
             "query" = public.get_child_trigger_def("trigger"."parentdef", "trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
             RAISE NOTICE USING MESSAGE = format('-- ADD TRIGGER %1I TO %2I TABLE FROM %3I TABLE', "name", "trigger"."childrelid"::REGCLASS, "trigger"."parentrelid"::REGCLASS);
-            RAISE NOTICE USING MESSAGE = format("query");
+            RAISE NOTICE USING MESSAGE = "query";
             EXECUTE "query";
         END LOOP;
 
