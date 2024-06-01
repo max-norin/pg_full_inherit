@@ -1,13 +1,14 @@
 CREATE FUNCTION public.get_inherit_constraints ()
     RETURNS TABLE
             (
-                "def"          TEXT,
                 "parentid"     OID,
                 "parentrelid"  OID,
                 "parentname"   TEXT,
+                "parentdef"    TEXT,
                 "childid"      OID,
                 "childrelid"   OID,
                 "childname"    TEXT,
+                "childdef"     TEXT,
                 "is_inherited" BOOL
             )
     AS $$
@@ -19,13 +20,14 @@ BEGIN
             SELECT "c"."oid", "c"."conrelid", "c"."conname", pg_get_constraintdef("c"."oid") AS "condef"
             FROM "pg_constraint" "c"
             WHERE "c"."contype" IN ('f', 'p', 'u'))
-        SELECT "pc"."condef"             AS "def",
-               "pc"."oid"                AS "parentid",
+        SELECT "pc"."oid"                AS "parentid",
                "i"."inhparent"           AS "parentrelid",
                "pc"."conname"::TEXT      AS "parentname",
+               "pc"."condef"             AS "parentdef",
                "cc"."oid"                AS "childid",
                "i"."inhrelid"            AS "childrelid",
                "cc"."conname"::TEXT      AS "childname",
+               "cc"."condef"             AS "childdef",
                "cc"."condef" IS NOT NULL AS "is_inherited"
         FROM "pg_inherits" "i"
                  LEFT JOIN "constraints" "pc" ON "i"."inhparent" = "pc"."conrelid"

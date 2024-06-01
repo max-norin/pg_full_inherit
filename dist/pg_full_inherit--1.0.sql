@@ -44,13 +44,14 @@ RETURNS NULL ON NULL INPUT;
 CREATE FUNCTION @extschema@.get_inherit_constraints ()
     RETURNS TABLE
             (
-                "def"          TEXT,
                 "parentid"     OID,
                 "parentrelid"  OID,
                 "parentname"   TEXT,
+                "parentdef"    TEXT,
                 "childid"      OID,
                 "childrelid"   OID,
                 "childname"    TEXT,
+                "childdef"     TEXT,
                 "is_inherited" BOOL
             )
 AS $$
@@ -60,13 +61,14 @@ BEGIN
             SELECT "c"."oid", "c"."conrelid", "c"."conname", pg_get_constraintdef("c"."oid") AS "condef"
             FROM "pg_constraint" "c"
             WHERE "c"."contype" IN ('f', 'p', 'u'))
-        SELECT "pc"."condef"             AS "def",
-               "pc"."oid"                AS "parentid",
+        SELECT "pc"."oid"                AS "parentid",
                "i"."inhparent"           AS "parentrelid",
                "pc"."conname"::TEXT      AS "parentname",
+               "pc"."condef"             AS "parentdef",
                "cc"."oid"                AS "childid",
                "i"."inhrelid"            AS "childrelid",
                "cc"."conname"::TEXT      AS "childname",
+               "cc"."condef"             AS "childdef",
                "cc"."condef" IS NOT NULL AS "is_inherited"
         FROM "pg_inherits" "i"
                  LEFT JOIN "constraints" "pc" ON "i"."inhparent" = "pc"."conrelid"
@@ -83,13 +85,14 @@ RETURNS NULL ON NULL INPUT;
 CREATE FUNCTION @extschema@.get_inherit_triggers ()
     RETURNS TABLE
             (
-                "def"          TEXT,
                 "parentid"     OID,
                 "parentrelid"  OID,
                 "parentname"   TEXT,
+                "parentdef"    TEXT,
                 "childid"      OID,
                 "childrelid"   OID,
                 "childname"    TEXT,
+                "childdef"     TEXT,
                 "is_inherited" BOOL
             )
 AS $$
@@ -99,13 +102,14 @@ BEGIN
             SELECT "t"."oid", "t"."tgrelid", "t"."tgname", pg_get_triggerdef("t"."oid") AS "tgdef"
             FROM "pg_trigger" "t"
             WHERE "t"."tgisinternal" = FALSE)
-        SELECT "pc"."tgdef"             AS "def",
-               "pc"."oid"               AS "parentid",
+        SELECT "pc"."oid"               AS "parentid",
                "i"."inhparent"          AS "parentrelid",
                "pc"."tgname"::TEXT      AS "parentname",
+               "pc"."tgdef"             AS "parentdef",
                "cc"."oid"               AS "childid",
                "i"."inhrelid"           AS "childrelid",
                "cc"."tgname"::TEXT      AS "childname",
+               "cc"."tgdef"             AS "childdef",
                "cc"."tgdef" IS NOT NULL AS "is_inherited"
         FROM "pg_inherits" "i"
                  LEFT JOIN "triggers" "pc" ON "i"."inhparent" = "pc"."tgrelid"
@@ -162,7 +166,7 @@ BEGIN
             EXIT WHEN "constraint" IS NULL;
 
             "name" = @extschema@.get_child_constraint_name("constraint"."parentname", "constraint"."parentrelid"::REGCLASS::TEXT, "constraint"."childrelid"::REGCLASS::TEXT);
-            "query" = format('ALTER TABLE %1I ADD CONSTRAINT %2I %3s;', "constraint"."childrelid"::REGCLASS, "name", "constraint"."def");
+            "query" = format('ALTER TABLE %1I ADD CONSTRAINT %2I %3s;', "constraint"."childrelid"::REGCLASS, "name", "constraint"."parentdef");
             RAISE NOTICE USING MESSAGE = format('-- ADD CONSTRAINT %1I TO %2I TABLE FROM %3I TABLE', "name", "constraint"."childrelid"::REGCLASS, "constraint"."parentrelid"::REGCLASS);
             RAISE NOTICE USING MESSAGE = "query";
             EXECUTE "query";
@@ -219,7 +223,7 @@ BEGIN
             EXIT WHEN "trigger" IS NULL;
 
             "name" = @extschema@.get_child_trigger_name("trigger"."parentname", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT);
-            "query" = replace ("trigger"."def", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT) || ';';
+            "query" = replace ("trigger"."parentdef", "trigger"."parentrelid"::REGCLASS::TEXT, "trigger"."childrelid"::REGCLASS::TEXT) || ';';
             RAISE NOTICE USING MESSAGE = format('-- ADD TRIGGER %1I TO %2I TABLE FROM %3I TABLE', "name", "trigger"."childrelid"::REGCLASS, "trigger"."parentrelid"::REGCLASS);
             RAISE NOTICE USING MESSAGE = format("query");
             EXECUTE "query";

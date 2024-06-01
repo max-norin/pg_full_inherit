@@ -1,13 +1,14 @@
 CREATE FUNCTION public.get_inherit_triggers ()
     RETURNS TABLE
             (
-                "def"          TEXT,
                 "parentid"     OID,
                 "parentrelid"  OID,
                 "parentname"   TEXT,
+                "parentdef"    TEXT,
                 "childid"      OID,
                 "childrelid"   OID,
                 "childname"    TEXT,
+                "childdef"     TEXT,
                 "is_inherited" BOOL
             )
     AS $$
@@ -19,13 +20,14 @@ BEGIN
             SELECT "t"."oid", "t"."tgrelid", "t"."tgname", pg_get_triggerdef("t"."oid") AS "tgdef"
             FROM "pg_trigger" "t"
             WHERE "t"."tgisinternal" = FALSE)
-        SELECT "pc"."tgdef"             AS "def",
-               "pc"."oid"               AS "parentid",
+        SELECT "pc"."oid"               AS "parentid",
                "i"."inhparent"          AS "parentrelid",
                "pc"."tgname"::TEXT      AS "parentname",
+               "pc"."tgdef"             AS "parentdef",
                "cc"."oid"               AS "childid",
                "i"."inhrelid"           AS "childrelid",
                "cc"."tgname"::TEXT      AS "childname",
+               "cc"."tgdef"             AS "childdef",
                "cc"."tgdef" IS NOT NULL AS "is_inherited"
         FROM "pg_inherits" "i"
                  LEFT JOIN "triggers" "pc" ON "i"."inhparent" = "pc"."tgrelid"
