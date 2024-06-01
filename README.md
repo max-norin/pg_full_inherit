@@ -280,20 +280,20 @@ DROP TRIGGER IF EXISTS "auto bio" ON public.users;
 Response in the console
 
 ```sql
--- DROP CONSTRAINT full_users_username_ukey FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
-ALTER TABLE full_users DROP CONSTRAINT IF EXISTS full_users_username_ukey;
+-- DROP CONSTRAINT "full_users--username: ukey" FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
+ALTER TABLE full_users DROP CONSTRAINT IF EXISTS "full_users--username: ukey";
 
--- DROP CONSTRAINT full_users_lang_id_fkey FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
-ALTER TABLE full_users DROP CONSTRAINT IF EXISTS full_users_lang_id_fkey;
+-- DROP CONSTRAINT "full_users: lang_id_fkey" FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
+ALTER TABLE full_users DROP CONSTRAINT IF EXISTS "full_users: lang_id_fkey";
 
 -- DROP CONSTRAINT full_users_city_id_fkey FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
 ALTER TABLE full_users DROP CONSTRAINT IF EXISTS full_users_city_id_fkey;
 
--- DROP TRIGGER check_username FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
-DROP TRIGGER IF EXISTS check_username ON full_users;
+-- DROP TRIGGER "check username" FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
+DROP TRIGGER IF EXISTS "check username" ON full_users;
 
--- DROP TRIGGER auto_bio FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
-DROP TRIGGER IF EXISTS auto_bio ON full_users;
+-- DROP TRIGGER "auto bio" FROM full_users TABLE BASED ON DEPENDENCY ON users TABLE
+DROP TRIGGER IF EXISTS "auto bio" ON full_users;
 ```
 
 ## Creating a table and defining it as a Child table
