@@ -265,16 +265,16 @@ CREATE TRIGGER "auto bio" BEFORE INSERT OR UPDATE ON public.full_users FOR EACH 
 ```sql
 -- deleting UNIQUE (username) from user table
 ALTER TABLE public.users
-  DROP CONSTRAINT users_username_ukey;
+  DROP CONSTRAINT "users--username: ukey";
 -- deleting FOREIGN KEY (lang_id) REFERENCES langs (id) from user table
 ALTER TABLE public.users
-  DROP CONSTRAINT users_lang_id_fkey;
+  DROP CONSTRAINT "users: lang_id fkey";
 -- deleting city_id column from user table
 ALTER TABLE public.users
   DROP COLUMN city_id;
 -- deleting CONSTRAINT TRIGGER and TRIGGER from user table
-DROP TRIGGER IF EXISTS "check_username" ON public.users;
-DROP TRIGGER IF EXISTS "auto_bio" ON public.users;
+DROP TRIGGER IF EXISTS "check username" ON public.users;
+DROP TRIGGER IF EXISTS "auto bio" ON public.users;
 ```
 
 Response in the console
