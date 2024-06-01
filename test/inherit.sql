@@ -4,6 +4,7 @@ CREATE TABLE public.new_users
     email    VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     lang_id  INT          NOT NULL,
+    city_id  INT          NOT NULL,
     is_new   BOOLEAN      NOT NULL
 );
 
