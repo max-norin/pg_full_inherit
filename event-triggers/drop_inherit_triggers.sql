@@ -35,8 +35,8 @@ BEGIN
                 -- имя триггера дочерней таблице
                 "name" = public.get_child_trigger_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
                 -- удаление триггер name из дочерней таблицы
-                "query" = format('DROP TRIGGER IF EXISTS %1I ON %2I;', "name", "child"::REGCLASS);
-                RAISE NOTICE USING MESSAGE = format('-- DROP TRIGGER %1I FROM %2I TABLE BASED ON DEPENDENCY ON %3I TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
+                "query" = format('DROP TRIGGER IF EXISTS %1I ON %2s;', "name", "child"::REGCLASS);
+                RAISE NOTICE USING MESSAGE = format('-- DROP TRIGGER %1I FROM %2s TABLE BASED ON DEPENDENCY ON %3s TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);
                 RAISE NOTICE USING MESSAGE = "query";
                 EXECUTE "query";
             END LOOP;

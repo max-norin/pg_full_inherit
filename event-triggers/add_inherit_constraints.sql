@@ -66,8 +66,8 @@ BEGIN
             -- имя для ограничения дочерней таблицы
             "name" = public.get_child_constraint_name("constraint"."parentname", "constraint"."parentrelid"::REGCLASS::TEXT, "constraint"."childrelid"::REGCLASS::TEXT);
             -- запрос на добавление ограничения name в таблицу childrelid
-            "query" = format('ALTER TABLE %1I ADD CONSTRAINT %2I %3s;', "constraint"."childrelid"::REGCLASS, "name", "constraint"."parentdef");
-            RAISE NOTICE USING MESSAGE = format('-- ADD CONSTRAINT %1I TO %2I TABLE FROM %3I TABLE', "name", "constraint"."childrelid"::REGCLASS, "constraint"."parentrelid"::REGCLASS);
+            "query" = format('ALTER TABLE %1s ADD CONSTRAINT %2I %3s;', "constraint"."childrelid", "name", "constraint"."parentdef");
+            RAISE NOTICE USING MESSAGE = format('-- ADD CONSTRAINT %1I TO %2s TABLE FROM %3s TABLE', "name", "constraint"."childrelid", "constraint"."parentrelid");
             -- запрос query запустить рекурсию этого метода,
             -- так как содержит команду ALTER TABLE,
             -- которая обрабатывается этой же функцией
