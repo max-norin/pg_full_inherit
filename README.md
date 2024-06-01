@@ -15,6 +15,27 @@ Including automatically inherited `CHECK` and `NOT NULL` constraints.
 
 [README in Russian](./README.ru.md)
 
+# Table of Contents
+
+1. [Installation](#installation)
+   1. [Classic](#Classic)
+   1. [Workaround](#Workaround)
+1. [Using](#Using)
+1. [Naming convention](#Naming-convention)
+   1. [Naming constraints](#Naming-constraints)
+   1. [Naming triggers](#Naming-triggers)
+   1. [Exceptions](#Exceptions)
+1. [Enabling and disabling inheritance](#Enabling-and-disabling-inheritance)
+1. [Operating principle](#Operating-principle)
+1. [Examples of work](#Examples-of-work)
+   1. [Creating a Parent Table](#Creating-a-Parent-Table)
+   1. [Creating a Child Table](#Creating-a-Child-Table)
+   1. [Changes to the Parent Table](#Changes-to-the-Parent-Table)
+   1. [Changes to the Parent Table](#changes-to-the-Parent-Table-1)
+   1. [Creating a table and defining it as a Child table](#Creatinga-table-and-defining-it-as-a-Child-table)
+   1. [Removing Child Table Inheritance](#Removing-Child-Table-Inheritance)
+1. [Deleting an extension](#Deleting-an-extension)
+
 # Installation
 
 ## Classic
