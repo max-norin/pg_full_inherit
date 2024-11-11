@@ -66,7 +66,7 @@ Install the extension.
 ```sql
 CREATE EXTENSION "pg_full_inherit"
     SCHEMA "abstract"
-    VERSION '1.0';
+    VERSION '1.1';
 ```
 
 [Learn more about an extension and control file](https://postgrespro.ru/docs/postgresql/current/extend-extensions)

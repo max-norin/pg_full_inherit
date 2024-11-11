@@ -64,7 +64,7 @@ BEGIN
             -- завершить цикл если constraint пустой
             EXIT WHEN "constraint" IS NULL;
             -- имя для ограничения дочерней таблицы
-            "name" = public.get_child_constraint_name("constraint"."parentname", "constraint"."parentrelid"::REGCLASS::TEXT, "constraint"."childrelid"::REGCLASS::TEXT);
+            "name" = public.get_child_constraint_name("constraint"."parentname", "constraint"."parentrelid"::REGCLASS, "constraint"."childrelid"::REGCLASS);
             -- запрос на добавление ограничения name в таблицу childrelid
             "query" = format('ALTER TABLE %1s ADD CONSTRAINT %2I %3s;', "constraint"."childrelid", "name", "constraint"."parentdef");
             RAISE NOTICE USING MESSAGE = format('-- ADD CONSTRAINT %1I TO %2s TABLE FROM %3s TABLE', "name", "constraint"."childrelid", "constraint"."parentrelid");

@@ -32,7 +32,7 @@ BEGIN
         FROM "pg_inherits" "i"
                  LEFT JOIN "triggers" "pc" ON "i"."inhparent" = "pc"."tgrelid"
                  LEFT JOIN "triggers" "cc" ON "i"."inhrelid" = "cc"."tgrelid"
-                      AND public.get_child_trigger_def("pc"."tgdef", "pc"."tgname":: TEXT, "i"."inhparent"::REGCLASS::TEXT, "i"."inhrelid"::REGCLASS::TEXT) = "cc"."tgdef"
+                      AND public.get_child_trigger_def("pc"."tgdef", "pc"."tgname":: TEXT, "i"."inhparent"::REGCLASS, "i"."inhrelid"::REGCLASS) = "cc"."tgdef"
         WHERE "pc"."oid" IS NOT NULL OR "cc"."oid" IS NOT NULL;
 END
 $$

@@ -33,7 +33,7 @@ BEGIN
             SELECT inhrelid FROM pg_inherits WHERE inhparent = "parent"
             LOOP
                 -- имя триггера дочерней таблице
-                "name" = public.get_child_trigger_name("name", "parent"::REGCLASS::TEXT, "child"::REGCLASS::TEXT);
+                "name" = public.get_child_trigger_name("name", "parent"::REGCLASS, "child"::REGCLASS);
                 -- удаление триггер name из дочерней таблицы
                 "query" = format('DROP TRIGGER IF EXISTS %1I ON %2s;', "name", "child"::REGCLASS);
                 RAISE NOTICE USING MESSAGE = format('-- DROP TRIGGER %1I FROM %2s TABLE BASED ON DEPENDENCY ON %3s TABLE', "name", "child"::REGCLASS, "parent"::REGCLASS);

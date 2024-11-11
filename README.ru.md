@@ -65,7 +65,7 @@ ALTER ROLE "postgres" SET search_path TO "public", "abstract";
 ```sql
 CREATE EXTENSION "pg_full_inherit"
     SCHEMA "abstract"
-    VERSION '1.0';
+    VERSION '1.1';
 ```
 
 [Подробнее про расширение и файл control](https://postgrespro.ru/docs/postgresql/current/extend-extensions)

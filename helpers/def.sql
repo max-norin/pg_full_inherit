@@ -1,9 +1,9 @@
-CREATE FUNCTION public.get_child_trigger_def ("parentdef" TEXT, "parentname" TEXT, "parent" TEXT, "child" TEXT)
+CREATE FUNCTION public.get_child_trigger_def ("parentdef" TEXT, "parentname" TEXT, "parent" REGCLASS, "child" REGCLASS)
     RETURNS TEXT
 AS $$
 BEGIN
     RETURN regexp_replace (
-            replace ("parentdef", "parent", "child"),
+            replace ("parentdef", public.get_table_name("parent", TRUE), public.get_table_name("child", TRUE)),
             '(CREATE (CONSTRAINT )?TRIGGER) ' || quote_ident ("parentname"),
             '\1 ' || quote_ident (public.get_child_trigger_name("parentname", "parent", "child")));
 END
